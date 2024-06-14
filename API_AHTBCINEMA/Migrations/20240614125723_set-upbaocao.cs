@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API_AHTBCINEMA.Migrations
 {
-    public partial class testdb : Migration
+    public partial class setupbaocao : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,6 +38,20 @@ namespace API_AHTBCINEMA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KhuyenMais",
+                columns: table => new
+                {
+                    IdKM = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    KhuyenMaiName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phantram = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KhuyenMais", x => x.IdKM);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LoaiGhes",
                 columns: table => new
                 {
@@ -66,12 +80,12 @@ namespace API_AHTBCINEMA.Migrations
                 columns: table => new
                 {
                     IdNV = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenNV = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SDT = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenNV = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    SDT = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NamSinh = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ChucVu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ChucVu = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,15 +107,29 @@ namespace API_AHTBCINEMA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    IdUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PassWord = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.IdUser);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Phims",
                 columns: table => new
                 {
                     IdPhim = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenPhim = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HinhAnh = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DangPhim = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenPhim = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DienVien = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DangPhim = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TheLoai = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ThoiLuong = table.Column<int>(type: "int", nullable: false)
+                    ThoiLuong = table.Column<int>(type: "int", nullable: false),
+                    HinhAnh = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -170,6 +198,27 @@ namespace API_AHTBCINEMA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GioChieus",
+                columns: table => new
+                {
+                    IdGioChieu = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GioBatDau = table.Column<TimeSpan>(type: "time", nullable: false),
+                    GioKetThuc = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Cachieu = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GioChieus", x => x.IdGioChieu);
+                    table.ForeignKey(
+                        name: "FK_GioChieus_CaChieus_Cachieu",
+                        column: x => x.Cachieu,
+                        principalTable: "CaChieus",
+                        principalColumn: "IdCaChieu",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ves",
                 columns: table => new
                 {
@@ -226,6 +275,12 @@ namespace API_AHTBCINEMA.Migrations
                         principalColumn: "IdKH",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_HoaDons_KhuyenMais_KhuyenMai",
+                        column: x => x.KhuyenMai,
+                        principalTable: "KhuyenMais",
+                        principalColumn: "IdKM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_HoaDons_NhanViens_NhanVien",
                         column: x => x.NhanVien,
                         principalTable: "NhanViens",
@@ -260,6 +315,11 @@ namespace API_AHTBCINEMA.Migrations
                 column: "Phong");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GioChieus_Cachieu",
+                table: "GioChieus",
+                column: "Cachieu");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HoaDons_Combo",
                 table: "HoaDons",
                 column: "Combo");
@@ -273,6 +333,11 @@ namespace API_AHTBCINEMA.Migrations
                 name: "IX_HoaDons_KhachHang",
                 table: "HoaDons",
                 column: "KhachHang");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HoaDons_KhuyenMai",
+                table: "HoaDons",
+                column: "KhuyenMai");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HoaDons_NhanVien",
@@ -300,13 +365,22 @@ namespace API_AHTBCINEMA.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "GioChieus");
+
+            migrationBuilder.DropTable(
                 name: "HoaDons");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "DoAnvaNuocs");
 
             migrationBuilder.DropTable(
                 name: "KhachHangs");
+
+            migrationBuilder.DropTable(
+                name: "KhuyenMais");
 
             migrationBuilder.DropTable(
                 name: "NhanViens");

@@ -56,6 +56,8 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DoAnvaNuoc doAnvaNuoc, IFormFile hinhanhFile)
         {
+            var demsoluong = _context.DoAnvaNuocs.Count();
+            doAnvaNuoc.IdComBo = "CB" + demsoluong;
             if (ModelState.IsValid)
             {
                 if (hinhanhFile != null && hinhanhFile.Length > 0)

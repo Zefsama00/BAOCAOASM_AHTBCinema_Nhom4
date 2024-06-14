@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using API_AHTBCINEMA.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AHTBCinema_NHOM4_SD18301.Models
@@ -22,9 +23,10 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [ForeignKey("KhachHangs")]
         public string KhachHang { get; set; }
         public KhachHang KhachHangs { get; set; }
+        [ForeignKey("KhuyenMais")]
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Khuyến mãi không được nhỏ hơn không")]
         public int KhuyenMai { get; set; }
+        public KhuyenMai KhuyenMais { get; set; }
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Tổng tiền không được nhỏ hơn không")]
         [DisplayFormat(DataFormatString = "{0:N0} VNĐ", ApplyFormatInEditMode = false)]

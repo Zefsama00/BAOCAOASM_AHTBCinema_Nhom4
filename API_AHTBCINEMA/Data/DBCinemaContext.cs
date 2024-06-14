@@ -1,4 +1,5 @@
 ﻿using AHTBCinema_NHOM4_SD18301.Models;
+using API_AHTBCINEMA.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
@@ -6,9 +7,12 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
     public class DBCinemaContext  : DbContext
     {
         public DbSet<CaChieu> CaChieus { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<GioChieu> GioChieus { get; set; }
         public DbSet<DoAnvaNuoc> DoAnvaNuocs { get; set; }
         public DbSet<Ghe> Ghes { get; set; }
         public DbSet<HoaDon> HoaDons { get; set; }
+        public DbSet<KhuyenMai> KhuyenMais { get; set; }
         public DbSet<KhachHang> KhachHangs { get; set; }
         public DbSet<LoaiGhe> LoaiGhes { get; set; }
         public DbSet<LoaiPhim> LoaiPhims { get; set; }
@@ -24,6 +28,8 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<CaChieu>().HasKey(p => p.IdCaChieu);
+            modelBuilder.Entity<User>().HasKey(p => p.IdUser);
+            modelBuilder.Entity<GioChieu>().HasKey(p => p.IdGioChieu);
             modelBuilder.Entity<DoAnvaNuoc>().HasKey(c => c.IdComBo);
             modelBuilder.Entity<Ghe>().HasKey(p => p.IdGhe);
             modelBuilder.Entity<HoaDon>().HasKey(c => c.IdHD);
@@ -34,6 +40,7 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
             modelBuilder.Entity<Phim>().HasKey(p => p.IdPhim);
             modelBuilder.Entity<Phong>().HasKey(c => c.IdPhong);
             modelBuilder.Entity<Ve>().HasKey(p => p.IdVe);
+            modelBuilder.Entity<KhuyenMai>().HasKey(p => p.IdKM);
 
             modelBuilder.Entity<Ghe>()
                 .HasOne(p => p.Phongs)
@@ -51,6 +58,10 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
               .HasOne(p => p.Phims)
               .WithMany(c => c.CaChieus)
               .HasForeignKey(p => p.Phim);
+            modelBuilder.Entity<GioChieu>()
+          .HasOne(p => p.CaChieus)
+          .WithMany(c => c.GioChieus)
+          .HasForeignKey(p => p.Cachieu);
             modelBuilder.Entity<CaChieu>()
               .HasOne(p => p.Phongs)
               .WithMany(c => c.CaChieu)
@@ -63,6 +74,10 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
               .HasOne(p => p.KhachHangs)
               .WithMany(c => c.HoaDons)
               .HasForeignKey(p => p.KhachHang);
+            modelBuilder.Entity<HoaDon>()
+           .HasOne(p => p.KhuyenMais)
+           .WithMany(c => c.HoaDons)
+           .HasForeignKey(p => p.KhuyenMai);
             modelBuilder.Entity<HoaDon>()
               .HasOne(p => p.NhanViens)
               .WithMany(c => c.HoaDons)

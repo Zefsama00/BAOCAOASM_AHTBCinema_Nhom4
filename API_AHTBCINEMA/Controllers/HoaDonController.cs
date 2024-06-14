@@ -113,7 +113,7 @@ namespace API_AHTBCINEMA.Controllers
             var existingCombo = await _context.DoAnvaNuocs.AnyAsync(x => x.IdComBo == hoaDon.Combo);
             var existingNhanVien = await _context.NhanViens.AnyAsync(x => x.IdNV == hoaDon.NhanVien);
             var existingKhachHang = await _context.KhachHangs.AnyAsync(x => x.IdKH == hoaDon.KhachHang);
-
+            var existingKhuyenMai = await _context.KhuyenMais.AnyAsync(x => x.IdKM == hoaDon.KhuyenMai);
             return existingVe && existingCombo && existingNhanVien && existingKhachHang;
         }
 

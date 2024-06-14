@@ -1,4 +1,5 @@
-﻿using System;
+﻿using API_AHTBCINEMA.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,6 +19,6 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         public DateTime NgayChieu { get; set; }
         public string TrangThai { get; set; }
         public ICollection<Ve> Ves { get; set; }
-
+        public ICollection<GioChieu> GioChieus { get; set; }
     }
 }
