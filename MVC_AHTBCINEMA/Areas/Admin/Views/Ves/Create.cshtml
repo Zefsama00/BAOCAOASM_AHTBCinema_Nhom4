@@ -1,0 +1,32 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.Ve
+
+<h4>Thêm mới vé </h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Tên vé</label>
+                <input asp-for="TenVe" class="form-control" />
+                <span asp-validation-for="TenVe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Giá vé</label>
+                <input asp-for="GiaVe" class="form-control" />
+                <span asp-validation-for="GiaVe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Ca chiếu</label>
+                <select asp-for="CaChieu" class="form-control" asp-items="ViewBag.CaChieu"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Ghế</label>
+                <select asp-for="Ghe" class="form-control" asp-items="ViewBag.Ghe"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Thêm mới" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

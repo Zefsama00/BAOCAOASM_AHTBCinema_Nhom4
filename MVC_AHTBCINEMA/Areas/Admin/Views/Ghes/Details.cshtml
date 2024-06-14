@@ -1,0 +1,43 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.Ghe
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Ghe</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TenGhe)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TenGhe)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Phongs)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Phongs.IdPhong)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LoaiGhes)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LoaiGhes.IdLoaiGhe)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdGhe">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

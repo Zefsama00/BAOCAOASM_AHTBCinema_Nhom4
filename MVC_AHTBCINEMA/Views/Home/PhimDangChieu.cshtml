@@ -1,0 +1,105 @@
+﻿<style>
+    img {
+        width: 500px;
+        height: 300px;
+    }
+
+    .card {
+        position: relative;
+    }
+
+        .card:hover {
+            transform: scale(1.1); /* Danh sách hiệu ứng hover tùy thuộc vào yêu cầu cụ thể*/
+        }
+
+</style>
+<div class="container text-center row">
+    
+    <h1 class="d-flex justify-content-center">PHIM ĐANG CHIẾU</h1>
+    <br />
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-3 mb-4">
+            <div class="card">
+                <a asp-controller="Home" asp-action="Gioithieuphimchitiet"><img class="card-img-top" src="/Image/phim/joker.jpg" alt="Card image cap"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Joker 2019</h5>
+                    <p class="card-text">Joaquin Phoenix, Robert De Niro,...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/fallenangel.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Fallen Angel 1995</h5>
+                    <p class="card-text">Lê Minh, Lý Gia Hân, Kim Thành Vũ...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/inception.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Inception</h5>
+                    <p class="card-text">Leonardo Dicaprio, Tom Hardy,...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/bladerunner2049.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Blade Runner 2049</h5>
+                    <p class="card-text">Ryan Gosling, Ana de Armas,...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col-3 mb-4">
+            <div class="card">
+                <a asp-controller="Home" asp-action="Gioithieuphimchitiet"><img class="card-img-top" src="/Image/phim/godfather.jpg" alt="Card image cap"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Godfather</h5>
+                    <p class="card-text">Marlon Brando, Robert De Niro,...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/casino.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Casino</h5>
+                    <p class="card-text">Robert De Niro, Joe Pesci, Sharon Stone...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/parasite.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Parasite</h5>
+                    <p class="card-text">Choi Woo-sik, Park So-dam, Lee Sun Gyun...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="/Image/phim/nowyouseeme.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Now you see me</h5>
+                    <p class="card-text">Jesse Eisenberg, Woody Harrelson...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="d-flex justify-content-center" aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div>

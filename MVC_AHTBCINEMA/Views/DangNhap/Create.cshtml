@@ -1,0 +1,126 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.KhachHang
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Đăng ký</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Theme files -->
+    <link href="/css/dangky.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- Google Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+    <style>
+        ::placeholder {
+            color: #fff !important;
+            opacity: 1; /* Firefox */
+        }
+
+        .header {
+            padding: 20px;
+        }
+
+            .header h1 {
+                margin: 20px 0 0 0;
+                padding: 0;
+                color: #fff;
+                text-align: center;
+                font-size: 80px;
+            }
+
+        .form-control {
+            background-color: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .text-white {
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- header start here -->
+    <div class="header">
+        <h1>Đăng ký</h1>
+    </div>
+    <!-- header end here -->
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="Create">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="nickname"  asp-for="IdKH">
+                        <span asp-validation-for="IdKH" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Họ và tên"  asp-for="TenKH">
+                        <span asp-validation-for="TenKH" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" placeholder="Email"  asp-for="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" class="form-control" placeholder="Số điện thoại" asp-for="SDT">
+                        <span asp-validation-for="SDT" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select" name="gender">
+                            <option value="">Giới tính</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <input type="date" class="form-control" name="birthdate" asp-for="NamSinh">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" placeholder="Mật khẩu"  asp-for="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer start here -->
+    <div class="copyright">
+        <p class="text-white">Đã có tài khoản | <a asp-controller="DangNhap" asp-action="Login" class="text-primary">Đăng nhập </a></p>
+    </div>
+    <!-- footer end here -->
+</body>
+</html>
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

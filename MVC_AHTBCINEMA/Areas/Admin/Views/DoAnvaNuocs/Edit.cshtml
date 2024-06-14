@@ -1,0 +1,78 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.DoAnvaNuoc
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h4 class="text-center">Chỉnh sửa đồ ăn và nước uống</h4>
+<hr />
+<div class="row">
+    <div class="col">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdComBo" />
+            <div class="row justify-content-center">
+                <div class="form-group m-2 col-5">
+                    <label asp-for="IdComBo" class="control-label">ID combo</label>
+                    <input asp-for="IdComBo" class="form-control" disabled />
+                    <span asp-validation-for="IdComBo" class="text-danger"></span>
+                </div>
+                <div class="form-group m-2 col-5">
+                    <label asp-for="TenCombo" class="control-label">Tên combo</label>
+                    <input asp-for="TenCombo" required class="form-control" />
+                    <span asp-validation-for="TenCombo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="form-group m-2 col-5">
+                    <label asp-for="Gia" class="control-label">Giá</label>
+                    <input asp-for="Gia" required type="number" class="form-control" />
+                    <span asp-validation-for="Gia" class="text-danger"></span>
+                </div>
+                <div class="form-group m-2 col-5">
+                    <label asp-for="Hinhanh" class="control-label">Chọn hình ảnh mới (nếu cần)</label>
+                    <input type="file" asp-for="Hinhanh" name="hinhanhFile" class="form-control" id="imageInput" onchange="previewImage(event)" />
+                    <span asp-validation-for="Hinhanh" class="text-danger"></span>
+                    <img id="preview" style="max-width: 200px; max-height: 200px; display: none;" />
+                </div>
+                <div class="form-group m-2 col-5"></div>
+                <div class="form-group m-2 col-5">
+                    <label class="control-label">Hình ảnh hiện tại</label><br />
+                    @if (!string.IsNullOrEmpty(Model.Hinhanh))
+                    {
+                        <img src="~/uploads/@Model.Hinhanh" style="max-width: 200px; max-height: 200px;" />
+                    }
+                    else
+                    {
+                        <span>Không có hình ảnh</span>
+                    }
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-5 m-2">
+                    <a asp-action="Index" class="btn btn-danger">Trở về</a>
+                </div>
+                <div class="form-group m-2 col-5">
+                    <button type="submit" class="btn btn-success" style="float:right">Lưu thông tin</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        var input = event.target;
+        var preview = document.getElementById('preview');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                preview.style.display = 'block';
+                preview.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

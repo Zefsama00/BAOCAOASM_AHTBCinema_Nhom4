@@ -1,0 +1,54 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.Ghe
+
+@{
+    ViewData["Title"] = "Tạo mới";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Tạo mới</h1>
+
+<h4>Thông tin Ghế</h4>
+<hr />
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row justify-content-center">
+        <div class="form-group m-2 col-5">
+            <label asp-for="IdGhe" class="control-label">ID Ghế</label>
+            <input asp-for="IdGhe" class="form-control" />
+            <span asp-validation-for="IdGhe" class="text-danger"></span>
+        </div>
+        <div class="form-group  m-2 col-5">
+            <label asp-for="TenGhe" class="control-label">Tên Ghế</label>
+            <input asp-for="TenGhe" class="form-control" />
+            <span asp-validation-for="TenGhe" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="form-group  m-2 col-3">
+            <label asp-for="Phong" class="control-label">Phòng</label>
+            <select asp-for="Phong" class="form-control" asp-items="ViewBag.Phong"></select>
+            <span asp-validation-for="Phong" class="text-danger"></span>
+        </div>
+        <div class="form-group  m-2 col-4">
+            <label asp-for="TrangThai" class="control-label">Trạng Thái</label>
+            <select asp-for="TrangThai" class="form-control">
+                <option value="Đã có">Đã có</option>
+                <option value="Trống">Trống</option>
+            </select>
+            <span asp-validation-for="TrangThai" class="text-danger"></span>
+        </div>
+        <div class="form-group m-2 col-4">
+            <label asp-for="LoaiGhe" class="control-label">Loại Ghế</label>
+            <select asp-for="LoaiGhe" class="form-control" asp-items="ViewBag.LoaiGhe"></select>
+            <span asp-validation-for="LoaiGhe" class="text-danger"></span>
+        </div>
+        <div class="">
+            <a asp-action="Index" class="btn btn-danger  m-2 col-7">Quay lại danh sách</a>
+        </div>
+        <div class="form-group  m-2 col-3">
+            <input type="submit" value="Tạo mới" class="btn btn-primary" />
+        </div>
+
+    </div>
+</form>

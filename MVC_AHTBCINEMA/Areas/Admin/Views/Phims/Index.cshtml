@@ -1,0 +1,65 @@
+﻿@model IEnumerable<AHTBCinema_NHOM4_SD18301.Models.Phim>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên phim
+            </th>
+            <th>
+                Diễn viên
+            </th>
+            <th>
+                Dạng phim
+            </th>
+            <th>
+                Thể loại
+            </th>
+            <th>
+                Thời lượng
+            </th>
+            <th>
+                Hình ảnh
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenPhim)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DienVien)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DangPhim)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoaiPhim.TenLoai)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ThoiLuong) phút
+                </td>
+                <td>
+                    <img src="~/uploads/@Html.DisplayFor(modelItem => item.HinhAnh)" alt="Alternate Text" style="max-width: 100px; max-height: 100px;" />
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdPhim" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Sửa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

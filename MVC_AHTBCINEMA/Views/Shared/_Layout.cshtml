@@ -1,0 +1,153 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    string user = Context.Session.GetString("Email");
+    bool isLoginIN = !string.IsNullOrEmpty(user);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AHTBCinema_NHOM4_SD18301</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.awesome.com/fontawesome/5.15.3/css/all.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.1.1/js/all.js" integrity="sha384-BtvRZcyfv4r0x/phJt9Y9HhnN5ur1Z+kZbKVgzVBAlQZX4jvAuImlIz+bG7TS00a" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <section class="myHeader bg-dark d-flex justify-content-center" style="border-radius:inherit">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-1 py-3">
+                        <img src="/Image/phim5.jpg" width="150"
+                             class="d-inline-block align-text-top img-fluid" alt="Logo" />
+                    </div>
+                    <div class="col-md-7 py-2">
+                        <div class="input-group mb-3">
+                            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
+                                <div class="container">
+                                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
+                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                            aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="navbar-toggler-icon"></span>
+                                    </button>
+                                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                                        <ul class="navbar-nav flex-grow-1">
+                                            <li class="nav-item">
+                                                <a class="nav-link text-light" asp-area="" asp-controller="Multimodel" asp-action="Index"><i class="fas fa-home"></i> Trang chủ</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="GioiThieu"><i class="fas fa-info"></i> Giới thiệu</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="PhimDangChieu"><i class="fa fa-film"></i></i> Phim đang chiếu</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Uudai"><i class="fa fa-gift"></i> Ưu đãi</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Question"><i class="fas fa-question-circle"></i> Câu hỏi thường gặp</a>
+                                            </li>
+                                          
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-md-4 py-4">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="fs-3 text-warning">
+                                            <i class="fas fa-headset"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9 text-white">
+                                        Hotline:<br />
+                                        <strong class="text-light">0956643564</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 text-decoration-none">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="fs-3 text-warning">
+                                            <i class="far fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9 text-white">
+                                        @if (isLoginIN)
+                                        {
+                                            <text>Hello @user </text>
+                                            <text><a class="text-light text-decoration-none" asp-controller="DangNhap" asp-action="Logout">Đăng xuất</a></text>
+                                        }
+                                        else
+                                        {
+
+                                            <text>Hello<br /><a class="text-light text-decoration-none" asp-controller="DangNhap" asp-action="Login">Đăng nhập</a></text>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </header>
+    <main role="main" class="pb-3">
+        <div class="container">
+       
+                @RenderBody()
+     
+        </div>
+    </main>
+    <footer class="border-top footer text-muted">
+        <div class="row">
+            <div class="row bg-dark text-light">
+                <div class="col-md-5 p-5">
+                    <h1>LIÊN HỆ VỚI CHÚNG TÔI</h1>
+                    <hr class="w-50">
+                    <div class="m-3 mb-3">
+                        <h6 style="color: rgb(0, 150, 0);">
+                            GIỚI THIỆU
+                        </h6>
+                        <span>Về Chúng Tôi </span>
+                        <span>Quy Chế Hoạt Động </span>
+                    </div>
+                    <div class="m-3">
+                        <h6 style="color: rgb(0, 150, 0);">
+                            HỖ TRỢ
+                        </h6>
+                        <span>Giá Vé </span>
+                        <span>Phim Đang Chiếu</span>
+                        <span>Góp Ý </span>
+                    </div>
+                    <div class="m-3">
+                        <h6 style="color: rgb(0, 150, 0);">
+                            SỰ KIỆN
+                        </h6>
+                        <span> Ưu Đãi </span>
+                        <span> Phim Hay Tháng </span>
+                    </div>
+                </div>
+                <div class="col-md-7 p-5">
+                    <iframe style="width: 100%"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.025514945481!2d105.78062484020298!3d10.0147509728205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a089cb87ab7abf%3A0x8ded7457828a8ddb!2zUGjhu5UgdGjDtG5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYyBD4bqnbiBUaMah!5e0!3m2!1svi!2s!4v1710933891496!5m2!1svi!2s"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

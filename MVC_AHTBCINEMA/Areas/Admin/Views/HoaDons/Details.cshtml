@@ -1,0 +1,78 @@
+﻿@model AHTBCinema_NHOM4_SD18301.Models.HoaDon
+
+@{
+    ViewData["Title"] = "Chi tiết hóa đơn";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .card-header {
+        font-family: 'Times New Roman', Times, serif;
+        background-color: black;
+        font-size: large;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .card-title {
+        margin-bottom: 0;
+    }
+
+    .card-footer {
+        background-color: #f0f0f0;
+        border-top: 1px solid #ddd;
+        padding: 20px;
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            color: #fff;
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+</style>
+
+<div class="container">
+    <div class="row" style="margin-top:50px">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hóa Đơn</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6">Vé:</dt>
+                        <dd class="col-sm-6">@String.Format("{0:N0} VNĐ", Model.Ve.GiaVe)</dd>
+                        <dt class="col-sm-6">Combo:</dt>
+                        <dd class="col-sm-6">@Html.DisplayFor(model => model.Combos.TenCombo)</dd>
+                        <dt class="col-sm-6">Giá combo:</dt>
+                        <dd class="col-sm-6">@String.Format("{0:N0} VNĐ", Model.Combos.Gia)</dd>
+                        <dt class="col-sm-6">Nhân Viên:</dt>
+                        <dd class="col-sm-6">@Html.DisplayFor(model => model.NhanViens.TenNV)</dd>
+                        <dt class="col-sm-6">Khách Hàng:</dt>
+                        <dd class="col-sm-6">@Html.DisplayFor(model => model.KhachHangs.TenKH)</dd>
+                        <dt class="col-sm-6">Khuyến Mãi:</dt>
+                        <dd class="col-sm-6">@Html.DisplayFor(model => model.KhuyenMai)%</dd>
+                        <dt class="col-sm-6">Tổng Tiền:</dt>
+                        <dd class="col-sm-6">  @String.Format("{0:N0} VNĐ", Model.TongTien)</dd>
+                    </dl>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

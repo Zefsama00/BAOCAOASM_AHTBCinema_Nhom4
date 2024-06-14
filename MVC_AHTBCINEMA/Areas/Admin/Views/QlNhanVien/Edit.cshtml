@@ -1,0 +1,65 @@
+﻿@model MVC_ASM_AHTBCinema_NHOM4_SD18301.Models.NhanVien
+
+<h4>Cập nhật thông tin Nhân Viên</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdNV" />
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="TenNV" class="control-label">Tên nhân viên:</label>
+                    <input asp-for="TenNV" class="form-control" />
+                    <span asp-validation-for="TenNV" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="SDT" class="control-label">Số điện thoại:</label>
+                    <input asp-for="SDT" class="form-control" />
+                    <span asp-validation-for="SDT" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="NamSinh" class="control-label">Ngày sinh:</label>
+                    <input asp-for="NamSinh" class="form-control" />
+                    <span asp-validation-for="NamSinh" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Email" class="control-label">Email:</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
+</div>
+
+
+
+<style>
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        width: 48%;
+    }
+</style>
