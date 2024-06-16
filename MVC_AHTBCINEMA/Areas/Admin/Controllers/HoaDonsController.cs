@@ -23,7 +23,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/HoaDons
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.HoaDons.Include(h => h.Combos).Include(h => h.KhachHangs).Include(h => h.NhanViens).Include(h => h.Ve);
+            var dBCinemaContext = _context.HoaDons.Include(h => h.Combos).Include(h => h.KhachHangs).Include(h => h.KhuyenMais).Include(h => h.NhanViens).Include(h => h.Ve);
             return View(await dBCinemaContext.ToListAsync());
         }
 
@@ -38,6 +38,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             var hoaDon = await _context.HoaDons
                 .Include(h => h.Combos)
                 .Include(h => h.KhachHangs)
+                .Include(h => h.KhuyenMais)
                 .Include(h => h.NhanViens)
                 .Include(h => h.Ve)
                 .FirstOrDefaultAsync(m => m.IdHD == id);
@@ -54,6 +55,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         {
             ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo");
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH");
+            ViewData["KhuyenMai"] = new SelectList(_context.KhuyenMais, "IdKM", "Phantram");
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV");
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe");
             return View();
@@ -68,12 +70,27 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                var combo = await _context.DoAnvaNuocs.FindAsync(hoaDon.Combo);
+                var ve = await _context.Ves.FindAsync(hoaDon.IdVe);
+                var khuyenmai = await _context.KhuyenMais.FindAsync(hoaDon.KhuyenMai);
+
+                if (combo != null && ve != null && khuyenmai != null)
+                {
+                    // Giả sử `Gia` và `GiaVe` là kiểu decimal hoặc float
+                    float comboGia = combo.Gia;
+                    float veGia = ve.GiaVe;
+                    float khuyenMai = khuyenmai.Phantram;
+
+                    float tong = comboGia + veGia;
+                    hoaDon.TongTien = tong - (tong * khuyenMai / 100);
+                }
                 _context.Add(hoaDon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
+            ViewData["KhuyenMai"] = new SelectList(_context.KhuyenMais, "IdKM", "Phantram", hoaDon.KhuyenMai);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
             return View(hoaDon);
@@ -94,6 +111,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
             ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
+            ViewData["KhuyenMai"] = new SelectList(_context.KhuyenMais, "IdKM", "Phantram", hoaDon.KhuyenMai);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
             return View(hoaDon);
@@ -115,6 +133,18 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 try
                 {
+                    var combo = await _context.DoAnvaNuocs.FindAsync(hoaDon.Combo);
+                    var ve = await _context.Ves.FindAsync(hoaDon.IdVe);
+                    var khuyenmai = await _context.KhuyenMais.FindAsync(hoaDon.KhuyenMai);
+                    if (combo != null && ve != null && khuyenmai != null)
+                    {
+                        float comboGia = combo.Gia;
+                        float veGia = ve.GiaVe;
+                        float khuyenMai = khuyenmai.Phantram;
+
+                        float tong = comboGia + veGia;
+                        hoaDon.TongTien = tong - (tong * khuyenMai / 100);
+                    }
                     _context.Update(hoaDon);
                     await _context.SaveChangesAsync();
                 }
@@ -133,8 +163,9 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
             ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
+            ViewData["KhuyenMai"] = new SelectList(_context.KhuyenMais, "IdKM", "Phantram", hoaDon.KhuyenMai);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
-            ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "IdVe", hoaDon.IdVe);
+            ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
             return View(hoaDon);
         }
 
@@ -149,6 +180,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             var hoaDon = await _context.HoaDons
                 .Include(h => h.Combos)
                 .Include(h => h.KhachHangs)
+                .Include(h => h.KhuyenMais)
                 .Include(h => h.NhanViens)
                 .Include(h => h.Ve)
                 .FirstOrDefaultAsync(m => m.IdHD == id);

@@ -27,8 +27,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [Required]
         public int KhuyenMai { get; set; }
         public KhuyenMai KhuyenMais { get; set; }
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Tổng tiền không được nhỏ hơn không")]
+       
         [DisplayFormat(DataFormatString = "{0:N0} VNĐ", ApplyFormatInEditMode = false)]
         public float TongTien { get; set; }
 
