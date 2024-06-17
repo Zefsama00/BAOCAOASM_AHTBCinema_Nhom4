@@ -1,4 +1,10 @@
-﻿<style>
+﻿@model MVC_AHTBCINEMA.Model.Multimodel
+@{
+    ViewData["Title"] = "ThanhToan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
 
     * {
         margin: 0;
@@ -148,8 +154,9 @@
         border: 1.5px solid #1A73E8;
         box-shadow: none;
     }
-    img{
-        width: 400px; 
+
+    img {
+        width: 400px;
         height: 300px;
     }
 
@@ -166,61 +173,69 @@
     }
 </style>
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4 mb-lg-0 mb-3">
-            <div class="card p-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-lg-0 mb-3">
+                <div class="card p-3">
                     <img src="/Image/qrthanhtoan.jpg" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-lg-4 mb-lg-0 mb-3">
-            <div class="card p-3">
-                <img src="/Image/qrthanhtoan2.jpg" alt="">
+            <div class="col-lg-4 mb-lg-0 mb-3">
+                <div class="card p-3">
+                    <img src="/Image/qrthanhtoan2.jpg" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-lg-4 mb-lg-0 mb-3">
-            <div class="card p-3">
-                <img src="/Image/qrthanhtoan3.jpg" alt="">
+            <div class="col-lg-4 mb-lg-0 mb-3">
+                <div class="card p-3">
+                    <img src="/Image/qrthanhtoan3.jpg" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-12 mt-4">
-            <div class="card p-3">
-                <p class="mb-0 fw-bold h4">Phương thức thanh toán</p>
+            <div class="col-12 mt-4">
+                <div class="card p-3">
+                    <p class="mb-0 fw-bold h4">Phương thức thanh toán</p>
+                </div>
             </div>
-        </div>
-        <div class="col-12">
-            <div class="card p-3">
-                <div class="card-body border p-0">
-                    <p>
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="card-body border p-0">
+                        <p>
 
-                    </p>
-                    <div class="collapse show p-3 pt-0" id="collapseExample">
-                        <div class="row">
-                            <div class="col-lg-5 mb-lg-0 mb-3">
-                                <p class="h4 mb-0">Thông tin</p>
-                                <p class="mb-0">
-                                    <span class="fw-bold">Tên phim:</span>
-                                    <span class="c-green">Chuyện tình Doãn Chí Bình</span>
-                                </p>
-                                <p class="mb-0">
-                                    <span class="fw-bold">Ngày chiếu:</span>
-                                    <span class="c-green">20/06/2024</span>
-                                </p>
-                                <p class="mb-0">
-                                    <span class="fw-bold">Giá:</span>
-                                    <span class="c-green">180.000 VNĐ</span>
-                                </p>
-
-                            </div>
-                            <div class="col-lg-7">
-                                <form action="" class="form">
-                                    <div class="row">
+                        </p>
+                        <div class="collapse show p-3 pt-0" id="collapseExample">
+                            <div class="row">
+                                <div class="col-lg-5 mb-lg-0 mb-3">
+                                    <p class="h4 mb-0">Thông tin</p>
+                                   
+                               
+                                     @foreach (var caChieu in Model.CaChieu)
+                                    {
+                                        <p class="mb-0">
+                                            <span class="fw-bold">Tên phim:</span>
+                                            <span class="c-green">@caChieu.Phims.TenPhim </span>
+                                        </p>
+                                        <p class="mb-0">
+                                            <span class="fw-bold">Ngày chiếu:</span>
+                                            <span class="c-green">@caChieu.NgayChieu</span>
+                                        </p>
+                                    }
+                                     @foreach (var ve in Model.Ve)
+                                    {
+                                        <p class="mb-0">
+                                            <span class="fw-bold">Giá:</span>
+                                            <span class="c-green">@ve.GiaVe.ToString("N0") VNĐ</span>
+                                        </p>
+                                    }
+                                </div>
+                                <div class="col-lg-7">
+                                    <form action="" class="form">
+                                        <div class="row">
                                             <div class="col-12">
                                                 <div class="btn btn-primary w-100" id="payBtn">Tạo mã giao dịch</div>
                                             </div>
                                             <div id="message" class="message"></div>
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -228,7 +243,6 @@
             </div>
         </div>
     </div>
-</div>
 </body>
 <script>
     // Biến cờ để theo dõi xem mã giao dịch đã được tạo hay chưa
@@ -259,3 +273,5 @@
         }, 2000); // Thời gian chờ 2 giây (2000 milliseconds)
     });
 </script>
+
+

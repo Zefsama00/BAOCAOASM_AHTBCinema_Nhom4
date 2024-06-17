@@ -31,17 +31,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="container">
-                            <div class="row g-2">
-                            @foreach(var ghe in Model.Ghe)
+                        <div class="row g-2">
+                            @foreach (var ghe in Model.Ghe)
                             {
                                 <div class="col-1 m-3 d-flex align-items-center justify-content-center">
-                                    <a class="btn btn-outline-primary" href="/Home/Pay">@ghe.TenGhe</a>
+                                    <a class="btn btn-outline-primary" href="@Url.Action("ThanhToan", "Multimodel", new { id = ghe.IdGhe, idphim = Model.Phim.First().IdPhim })">@ghe.TenGhe</a>
                                 </div>
                             }
-                            
-              
-
-                            </div>
+                        </div>
                             <div class="row g-2">
                                 <!-- Thêm các ghế của hàng thứ 2 tương tự -->
                             </div>
@@ -84,7 +81,7 @@
                                 <div class="border border-danger p-3" id="showtimes" style="display: none;">
                                     @foreach (var cachieu in Model.CaChieu)
                                     {
-                                        <p class="bg-dark text-white" style="padding: 5px;"> Ngày : @cachieu.NgayChieu.ToShortDateString()</p>
+                                        <p class="bg-dark text-white" style="padding: 5px;"> Ngày: @cachieu.NgayChieu.ToShortDateString()</p>
                                         <div class="btn-toolbar justify-content-start" role="toolbar" aria-label="Lịch xem">
                                             <div class="btn-group me-2" role="group">
                                                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-outline-primary time-slot">
