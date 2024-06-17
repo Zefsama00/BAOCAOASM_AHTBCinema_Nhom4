@@ -7,7 +7,6 @@ namespace AHTBCinema_NHOM4_SD18301.Models
     public class KhachHang
     {
         [Key]
-        [Required(ErrorMessage ="Không được để trống")]
         public string IdKH { get; set; }
         [Required(ErrorMessage = "Vui lòng không để trống tên Khách Hàng")]
         [StringLength(50, ErrorMessage = "Độ dài tối đa là 50")]

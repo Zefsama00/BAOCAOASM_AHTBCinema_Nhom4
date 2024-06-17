@@ -52,7 +52,7 @@ namespace API_AHTBCINEMA.Controllers
                 IdVe = product.IdVe,
                 TenVe = product.TenVe,
                 GiaVe = product.GiaVe,
-                CaChieu = product.CaChieu,
+                SuatChieu = product.SuatChieu,
                 Ghe = product.Ghe,
             };
             try
@@ -84,7 +84,7 @@ namespace API_AHTBCINEMA.Controllers
                 // Kiểm tra tồn tại liên quan
                 if (!await RelatedEntitiesExist(ve))
                 {
-                    return NotFound(new { Message = "Loaive or Phong not found" });
+                    return NotFound(new { Message = "SuatChieu or Phong not found" });
                 }
 
                 // Cập nhật thuộc tính của Vé
@@ -107,7 +107,7 @@ namespace API_AHTBCINEMA.Controllers
         // Phương thức kiểm tra tồn tại của các thực thể liên quan
         private async Task<bool> RelatedEntitiesExist(Ve ve)
         {
-            var existingCaChieu = await _context.CaChieus.AnyAsync(x => x.IdCaChieu == ve.CaChieu);
+            var existingCaChieu = await _context.GioChieus.AnyAsync(x => x.IdGioChieu == ve.SuatChieu);
             var existingGhe = await _context.Ghes.AnyAsync(x => x.IdGhe == ve.Ghe);
 
             return existingCaChieu && existingGhe;
@@ -118,7 +118,7 @@ namespace API_AHTBCINEMA.Controllers
         {
             existingve.TenVe = ve.TenVe;
             existingve.GiaVe = ve.GiaVe;
-            existingve.CaChieu = ve.CaChieu;
+            existingve.SuatChieu = ve.SuatChieu;
             existingve.Ghe = ve.Ghe;
         }
     }
