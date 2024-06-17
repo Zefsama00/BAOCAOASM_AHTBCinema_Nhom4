@@ -62,16 +62,16 @@ namespace MVC_AHTBCINEMA.Controllers
             }
 
             // Lấy thông tin ca chiếu dựa trên vé vừa tìm được
-            var cachieu = _context.CaChieus
-                .Include(c => c.Phims) // Đảm bảo load thông tin phim
-                .FirstOrDefault(x => x.IdCaChieu == ve.CaChieu);
+            var cachieu = _context.GioChieus
+                .Include(c => c.CaChieus) // Đảm bảo load thông tin phim
+                .FirstOrDefault(x => x.IdGioChieu == ve.SuatChieu);
 
             // Kiểm tra xem idphim từ URL có khớp với Phim của ca chiếu không
-            if (idphim == cachieu.Phim)
+            if (idphim == cachieu.CaChieus.Phim)
             {
                 var viewModel = new Multimodel
                 {
-                    CaChieu = new List<CaChieu> { cachieu }, // Gán trực tiếp cachieu vào CaChieu
+                    CaChieu = new List<CaChieu> { cachieu.CaChieus }, // Gán trực tiếp cachieu vào CaChieu
                     Ghe = _context.Ghes.Where(g => g.IdGhe == id).ToList(),
                     Ve = new List<Ve> { ve }
                 };
