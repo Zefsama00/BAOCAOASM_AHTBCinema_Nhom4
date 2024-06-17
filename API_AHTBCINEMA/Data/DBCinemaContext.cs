@@ -67,9 +67,9 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
               .WithMany(c => c.CaChieu)
               .HasForeignKey(p => p.Phong);
             modelBuilder.Entity<Ve>()
-              .HasOne(p => p.CaChieus)
+              .HasOne(p => p.GioChieus)
               .WithMany(c => c.Ves)
-              .HasForeignKey(p => p.CaChieu);
+              .HasForeignKey(p => p.SuatChieu);
             modelBuilder.Entity<HoaDon>()
               .HasOne(p => p.KhachHangs)
               .WithMany(c => c.HoaDons)

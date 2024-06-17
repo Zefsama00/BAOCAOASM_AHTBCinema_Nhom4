@@ -10,7 +10,7 @@ namespace API_AHTBCINEMA.Models
         public string TenVe { get; set; }
         public float GiaVe { get; set; }
 
-        public int CaChieu { get; set; }
+        public int SuatChieu { get; set; }
    
         public string Ghe { get; set; }
     }

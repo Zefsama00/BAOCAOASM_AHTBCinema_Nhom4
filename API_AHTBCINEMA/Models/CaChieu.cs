@@ -18,7 +18,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         public Phim Phims { get; set; }
         public DateTime NgayChieu { get; set; }
         public string TrangThai { get; set; }
-        public ICollection<Ve> Ves { get; set; }
+     
         public ICollection<GioChieu> GioChieus { get; set; }
     }
 }

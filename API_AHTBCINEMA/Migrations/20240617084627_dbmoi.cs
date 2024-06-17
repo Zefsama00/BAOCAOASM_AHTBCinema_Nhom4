@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API_AHTBCINEMA.Migrations
 {
-    public partial class setupbaocao : Migration
+    public partial class dbmoi : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -111,8 +111,9 @@ namespace API_AHTBCINEMA.Migrations
                 columns: table => new
                 {
                     IdUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PassWord = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PassWord = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -226,24 +227,24 @@ namespace API_AHTBCINEMA.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TenVe = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GiaVe = table.Column<float>(type: "real", nullable: false),
-                    CaChieu = table.Column<int>(type: "int", nullable: false),
+                    SuatChieu = table.Column<int>(type: "int", nullable: false),
                     Ghe = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ves", x => x.IdVe);
                     table.ForeignKey(
-                        name: "FK_Ves_CaChieus_CaChieu",
-                        column: x => x.CaChieu,
-                        principalTable: "CaChieus",
-                        principalColumn: "IdCaChieu",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Ves_Ghes_Ghe",
                         column: x => x.Ghe,
                         principalTable: "Ghes",
                         principalColumn: "IdGhe",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ves_GioChieus_SuatChieu",
+                        column: x => x.SuatChieu,
+                        principalTable: "GioChieus",
+                        principalColumn: "IdGioChieu",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -350,23 +351,20 @@ namespace API_AHTBCINEMA.Migrations
                 column: "TheLoai");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ves_CaChieu",
-                table: "Ves",
-                column: "CaChieu");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ves_Ghe",
                 table: "Ves",
                 column: "Ghe",
                 unique: true,
                 filter: "[Ghe] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ves_SuatChieu",
+                table: "Ves",
+                column: "SuatChieu");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "GioChieus");
-
             migrationBuilder.DropTable(
                 name: "HoaDons");
 
@@ -389,16 +387,19 @@ namespace API_AHTBCINEMA.Migrations
                 name: "Ves");
 
             migrationBuilder.DropTable(
-                name: "CaChieus");
-
-            migrationBuilder.DropTable(
                 name: "Ghes");
 
             migrationBuilder.DropTable(
-                name: "Phims");
+                name: "GioChieus");
 
             migrationBuilder.DropTable(
                 name: "LoaiGhes");
+
+            migrationBuilder.DropTable(
+                name: "CaChieus");
+
+            migrationBuilder.DropTable(
+                name: "Phims");
 
             migrationBuilder.DropTable(
                 name: "Phongs");
