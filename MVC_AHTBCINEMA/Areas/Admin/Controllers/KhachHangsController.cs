@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AHTBCinema_NHOM4_SD18301.Models;
 using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
+using API_AHTBCINEMA.Models;
 
 namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 {
@@ -87,7 +88,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdKH,TenKH,SDT,NamSinh,Email,Password")] KhachHang khachHang)
+        public async Task<IActionResult> Edit(string id, [Bind("IdKH,TenKH,SDT,NamSinh,Email,Password")] KhachHang khachHang, [Bind("IdUser,Username,PassWord,Role")] User user)
         {
             if (id != khachHang.IdKH)
             {
@@ -98,24 +99,52 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(khachHang);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KhachHangExists(khachHang.IdKH))
+                    // Find the existing customer
+                    var existingKhachHang = await _context.KhachHangs.FindAsync(id);
+                    if (existingKhachHang == null)
                     {
                         return NotFound();
                     }
-                    else
+
+                    // Update the customer's details
+                    existingKhachHang.TenKH = khachHang.TenKH;
+                    existingKhachHang.SDT = khachHang.SDT;
+                    existingKhachHang.NamSinh = khachHang.NamSinh;
+                    existingKhachHang.Email = khachHang.Email;
+                    existingKhachHang.Password = khachHang.Password;
+
+                    _context.Update(existingKhachHang);
+
+                    // Find the existing user
+                    var existingUser = await _context.Users.FindAsync(existingKhachHang.IdKH);
+                    if (existingUser == null)
                     {
-                        throw;
+                        return NotFound();
                     }
+
+                    // Update the user's details
+                    string usernameFromEmail = khachHang.Email.Substring(0, khachHang.Email.IndexOf("@"));
+                    existingUser.Username = usernameFromEmail;
+                    existingUser.PassWord = khachHang.Password;
+                    existingUser.Role = user.Role; // Assuming you might want to update the role as well
+
+                    _context.Update(existingUser);
+
+                    // Save changes to the database
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    // Handle exceptions if necessary
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại sau.");
+                    return View(khachHang); // Return to the view to display the information and errors
+                }
             }
             return View(khachHang);
         }
+
 
         // GET: Admin/KhachHangs/Delete/5
         public async Task<IActionResult> Delete(string id)
