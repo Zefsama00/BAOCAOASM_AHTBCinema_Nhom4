@@ -31,6 +31,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [Range(1, int.MaxValue, ErrorMessage = "Tổng tiền không được nhỏ hơn không")]
         [DisplayFormat(DataFormatString = "{0:N0} VNĐ", ApplyFormatInEditMode = false)]
         public float TongTien { get; set; }
+        public string TrangThai { get; set; }
 
     }
 }

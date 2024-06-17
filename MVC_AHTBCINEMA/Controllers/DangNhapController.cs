@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API_AHTBCINEMA.Models;
 using System;
+using MVC_ASM_AHTBCinema_NHOM4_SD18301.Models;
 
 namespace MVC_AHTBCINEMA.Controllers
 {
@@ -48,7 +49,7 @@ namespace MVC_AHTBCINEMA.Controllers
 
                 if (u != null)
                 {
-                    if(u.Role=="nhanvien" || u.Role == "admin")
+                    if(u.Role == "nhanvien" || u.Role == "admin")
                     {
                         return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
@@ -87,7 +88,7 @@ namespace MVC_AHTBCINEMA.Controllers
                 {
                     var demkh = _context.KhachHangs.Count() + 1;
                     khachHang.IdKH = "KH" + demkh.ToString();
-
+                    khachHang.TrangThai = "Hoạt động";
                     // Lưu khách hàng vào database
                     _context.KhachHangs.Add(khachHang);
                     int add = await _context.SaveChangesAsync();

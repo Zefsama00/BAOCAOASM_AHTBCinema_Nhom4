@@ -27,6 +27,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [Required(ErrorMessage = "Vui lòng không để trống mật khẩu")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*\W).{6,}$", ErrorMessage = "Mật khẩu ít nhất 1 chữ hoa, 1 ký tự đặt biệt, 1 số, tối thiểu là 6")]
         public string Password { get; set; }
+        public string TrangThai { get; set; }
         public string NgaySinhString => NamSinh.ToString("dd-MM-yyyy");
         public ICollection<HoaDon> HoaDons { get; set; }
     }
