@@ -168,6 +168,17 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
             return View(hoaDon);
         }
+        [HttpPost]
+        public IActionResult Approve(int IdHD)
+        {
+            var hoaDon = _context.HoaDons.Find(IdHD);
+            if (hoaDon != null)
+            {
+                hoaDon.TrangThai = "Đã xác nhận"; 
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Admin/HoaDons/Delete/5
         public async Task<IActionResult> Delete(int? id)

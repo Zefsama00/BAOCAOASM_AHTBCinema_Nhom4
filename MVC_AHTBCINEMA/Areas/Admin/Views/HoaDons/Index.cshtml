@@ -9,10 +9,54 @@
     .content-wrapper {
         margin-top: 50px;
     }
+
+    .form-section {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        color: #333;
+    }
+
+        .form-section .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+            .form-section .info-item strong {
+                color: black; 
+                flex: 1;
+            }
+
+            .form-section .info-item span {
+                text-align: right;
+            }
+
+        .form-section .btn {
+            margin-top: 10px;
+        }
+
+        .form-section .status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+    .btn-success.status {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .card-footer .btn-success {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
 </style>
 
 <div class="">
-    <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row sm-2">
@@ -20,63 +64,76 @@
                     <h1>Hóa đơn</h1>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
-
-    <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-sm-12">
                     <div class="card">
-
-                        <!-- /.card-header -->
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 15%">Giá vé</th>
-                                            <th style="width: 15%">Combo</th>
-                                            <th style="width: 15%">Nhân viên</th>
-                                            <th style="width: 15%">Khách hàng</th>
-                                            <th style="width: 10%">Khuyến mãi</th>
-                                            <th style="width: 15%">Tổng tiền</th>
-                                            <th style="width: 15%">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model)
-                                        {
-                                            <tr>
-                                                <td>@String.Format("{0:N0} VNĐ", item.Ve.GiaVe)</td>
-                                                <td>@Html.DisplayFor(modelItem => item.Combos.TenCombo)</td>
-                                                <td>@Html.DisplayFor(modelItem => item.NhanViens.TenNV)</td>
-                                                <td>@Html.DisplayFor(modelItem => item.KhachHangs.TenKH)</td>
-                                                <td>@Html.DisplayFor(modelItem => item.KhuyenMais.Phantram)%</td>
-                                                <td>@String.Format("{0:N0} VNĐ", item.TongTien)</td>
-                                                <td>
-                                                    <a asp-action="Edit" class="btn btn-primary btn-sm" asp-route-id="@item.IdHD"><i class="fas fa-edit"></i> Sửa</a>
-                                                    <a asp-action="Details" class="btn btn-info btn-sm" asp-route-id="@item.IdHD">
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    @foreach (var item in Model)
+                                    {
+                                        <div class="col-md-4">
+                                            <div class="form-section">
+                                                <div class="info-item">
+                                                    <strong>Giá vé:</strong>
+                                                    <span>@String.Format("{0:N0} VNĐ", item.Ve.GiaVe)</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Combo:</strong>
+                                                    <span>@Html.DisplayFor(modelItem => item.Combos.TenCombo)</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Nhân viên:</strong>
+                                                    <span>@Html.DisplayFor(modelItem => item.NhanViens.TenNV)</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Khách hàng:</strong>
+                                                    <span>@Html.DisplayFor(modelItem => item.KhachHangs.TenKH)</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Khuyến mãi:</strong>
+                                                    <span>@Html.DisplayFor(modelItem => item.KhuyenMais.Phantram)%</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Tổng tiền:</strong>
+                                                    <span>@String.Format("{0:N0} VNĐ", item.TongTien)</span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <strong>Trạng thái:</strong>
+                                                    <span class="status btn-success">@item.TrangThai</span>
+                                                </div>
+                                                <div>
+                                                    @if (item.TrangThai != "Đã xác nhận")
+                                                    {
+                                                        <form asp-action="Approve" method="post">
+                                                            <input type="hidden" name="IdHD" value="@item.IdHD" />
+                                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                                <i class="fas fa-check"></i> Duyệt
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                   @*  <a asp-action="Details" class="btn btn-info btn-sm">
                                                         <i class="fas fa-info-circle"></i> Chi tiết
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                                    </a> *@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                         <!-- /.card-body -->
                         <!-- Thêm nút "Thêm" -->
-                        <div class="card-footer">
-                            <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Thêm</a>
-                        </div>
-
+                        @* <div class="card-footer">
+                        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Thêm</a>
+                        </div> *@
                     </div>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
-    <!-- /.content -->
 </div>
