@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_AHTBCINEMA.Migrations
 {
     [DbContext(typeof(DBCinemaContext))]
-    [Migration("20240614125723_set-upbaocao")]
-    partial class setupbaocao
+    [Migration("20240617084627_dbmoi")]
+    partial class dbmoi
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -287,25 +287,25 @@ namespace API_AHTBCINEMA.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CaChieu")
-                        .HasColumnType("int");
-
                     b.Property<string>("Ghe")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<float>("GiaVe")
                         .HasColumnType("real");
 
+                    b.Property<int>("SuatChieu")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenVe")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdVe");
 
-                    b.HasIndex("CaChieu");
-
                     b.HasIndex("Ghe")
                         .IsUnique()
                         .HasFilter("[Ghe] IS NOT NULL");
+
+                    b.HasIndex("SuatChieu");
 
                     b.ToTable("Ves");
                 });
@@ -356,10 +356,13 @@ namespace API_AHTBCINEMA.Migrations
                     b.Property<string>("IdUser")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("PassWord")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PassWord")
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUser");
@@ -445,19 +448,19 @@ namespace API_AHTBCINEMA.Migrations
 
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.Ve", b =>
                 {
-                    b.HasOne("AHTBCinema_NHOM4_SD18301.Models.CaChieu", "CaChieus")
-                        .WithMany("Ves")
-                        .HasForeignKey("CaChieu")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AHTBCinema_NHOM4_SD18301.Models.Ghe", "Ghes")
                         .WithOne("Ves")
                         .HasForeignKey("AHTBCinema_NHOM4_SD18301.Models.Ve", "Ghe");
 
-                    b.Navigation("CaChieus");
+                    b.HasOne("API_AHTBCINEMA.Models.GioChieu", "GioChieus")
+                        .WithMany("Ves")
+                        .HasForeignKey("SuatChieu")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Ghes");
+
+                    b.Navigation("GioChieus");
                 });
 
             modelBuilder.Entity("API_AHTBCINEMA.Models.GioChieu", b =>
@@ -474,8 +477,6 @@ namespace API_AHTBCINEMA.Migrations
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.CaChieu", b =>
                 {
                     b.Navigation("GioChieus");
-
-                    b.Navigation("Ves");
                 });
 
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.DoAnvaNuoc", b =>
@@ -523,6 +524,11 @@ namespace API_AHTBCINEMA.Migrations
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.Ve", b =>
                 {
                     b.Navigation("HoaDons");
+                });
+
+            modelBuilder.Entity("API_AHTBCINEMA.Models.GioChieu", b =>
+                {
+                    b.Navigation("Ves");
                 });
 
             modelBuilder.Entity("API_AHTBCINEMA.Models.KhuyenMai", b =>

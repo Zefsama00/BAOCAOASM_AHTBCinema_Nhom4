@@ -23,7 +23,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/Ves
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.Ves.Include(v => v.CaChieus).Include(v => v.Ghes);
+            var dBCinemaContext = _context.Ves.Include(v => v.GioChieus).Include(v => v.Ghes);
             return View(await dBCinemaContext.ToListAsync());
         }
 
@@ -36,7 +36,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var ve = await _context.Ves
-                .Include(v => v.CaChieus)
+                .Include(v => v.GioChieus)
                 .Include(v => v.Ghes)
                 .FirstOrDefaultAsync(m => m.IdVe == id);
             if (ve == null)
@@ -50,7 +50,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/Ves/Create
         public IActionResult Create()
         {
-            ViewData["CaChieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu");
+            ViewData["GioChieu"] = new SelectList(_context.GioChieus, "IdGioChieu", "IdGioChieu");
             ViewData["Ghe"] = new SelectList(_context.Ghes, "IdGhe", "TenGhe");
             return View();
         }
@@ -60,7 +60,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdVe,TenVe,GiaVe,CaChieu,Ghe")] Ve ve)
+        public async Task<IActionResult> Create([Bind("IdVe,TenVe,GiaVe,SuatChieu,Ghe")] Ve ve)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaChieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", ve.CaChieu);
+            ViewData["GioChieu"] = new SelectList(_context.GioChieus, "IdGioChieu", "IdGioChieu", ve.SuatChieu);
             ViewData["Ghe"] = new SelectList(_context.Ghes, "IdGhe", "TenGhe", ve.Ghe);
             return View(ve);
         }
@@ -86,7 +86,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CaChieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", ve.CaChieu);
+            ViewData["GioChieu"] = new SelectList(_context.GioChieus, "IdGioChieu", "IdGioChieu", ve.SuatChieu);
             ViewData["Ghe"] = new SelectList(_context.Ghes, "IdGhe", "TenGhe", ve.Ghe);
             return View(ve);
         }
@@ -96,7 +96,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdVe,TenVe,GiaVe,CaChieu,Ghe")] Ve ve)
+        public async Task<IActionResult> Edit(int id, [Bind("IdVe,TenVe,GiaVe,SuatChieu,Ghe")] Ve ve)
         {
             if (id != ve.IdVe)
             {
@@ -123,7 +123,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaChieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", ve.CaChieu);
+            ViewData["GioChieu"] = new SelectList(_context.GioChieus, "IdGioChieu", "IdGioChieu", ve.SuatChieu);
             ViewData["Ghe"] = new SelectList(_context.Ghes, "IdGhe", "TenGhe", ve.Ghe);
             return View(ve);
         }
@@ -137,7 +137,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var ve = await _context.Ves
-                .Include(v => v.CaChieus)
+                .Include(v => v.GioChieus)
                 .Include(v => v.Ghes)
                 .FirstOrDefaultAsync(m => m.IdVe == id);
             if (ve == null)

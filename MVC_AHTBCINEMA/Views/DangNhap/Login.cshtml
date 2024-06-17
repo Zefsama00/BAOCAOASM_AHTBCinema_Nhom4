@@ -1,4 +1,4 @@
-﻿@model AHTBCinema_NHOM4_SD18301.Models.KhachHang
+﻿@model API_AHTBCINEMA.Models.User
 @{
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -47,11 +47,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         {
                             <form>
                                 <div class="mb-3">
-                                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control text-white", placeholder = "Email" })
+                                    @Html.TextBoxFor(x => x.Username, new { @class = "form-control text-white", placeholder = "Email" })
 
                                 </div>
                                 <div class="mb-3">
-                                    @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "Enter password", type = "password" })
+                                    @Html.TextBoxFor(x => x.PassWord, new { @class = "form-control", placeholder = "Enter password", type = "password" })
                                 </div>
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" id="remember">
@@ -63,7 +63,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </form>
-                        }
+                        }a
                     </div>
                 </div>
 
