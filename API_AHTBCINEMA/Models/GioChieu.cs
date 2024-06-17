@@ -15,6 +15,7 @@ namespace API_AHTBCINEMA.Models
         [ForeignKey("CaChieus")]
         public int Cachieu { get; set; }
         public CaChieu CaChieus { get; set; }
+        public string TrangThai { get; set; }
         public ICollection<Ve> Ves { get; set; }
     }
 }
