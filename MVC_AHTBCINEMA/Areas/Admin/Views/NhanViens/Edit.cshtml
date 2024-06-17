@@ -1,4 +1,9 @@
-﻿@model MVC_ASM_AHTBCinema_NHOM4_SD18301.Models.NhanVien
+﻿@model AHTBCinema_NHOM4_SD18301.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
 
 <h4>Cập nhật thông tin Nhân Viên</h4>
 <hr />
@@ -48,7 +53,7 @@
 </div>
 
 <div>
-    <a asp-action="GetAll" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 
