@@ -8,5 +8,6 @@ namespace MVC_AHTBCINEMA.Model
         public IEnumerable<Phim> Phim { get; set; }
         public IEnumerable<Ghe> Ghe { get; set; }
         public IEnumerable<CaChieu> CaChieu { get; set; }
+        public List<Phim> SuggestedMovies { get; internal set; }
     }
 }

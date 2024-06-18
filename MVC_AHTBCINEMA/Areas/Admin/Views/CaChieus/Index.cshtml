@@ -1,0 +1,55 @@
+﻿@model IEnumerable<AHTBCinema_NHOM4_SD18301.Models.CaChieu>
+
+@{
+    ViewData["Title"] = "Quản lý Ca Chiếu";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Quản lý Ca Chiếu</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Thêm Ca Chiếu</a>
+</p>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Phòng
+            </th>
+            <th>
+                Phim
+            </th>
+            <th>
+                Ngày chiếu
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phongs.SoPhong)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phims.TenPhim)
+                </td>
+                <td>
+                    @item.NgayChieu.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdCaChieu">Sửa</a>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdCaChieu">Chi Tiết</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdCaChieu">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

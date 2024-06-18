@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Areas\Admin\Views\Ghes\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Ghes\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Ghes\Details.cshtml" />
+    <None Include="Areas\Admin\Views\Ghes\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Ghes\Index.cshtml" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
