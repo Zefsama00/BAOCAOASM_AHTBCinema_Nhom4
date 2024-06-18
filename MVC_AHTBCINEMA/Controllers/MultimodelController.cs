@@ -17,11 +17,26 @@ namespace MVC_AHTBCINEMA.Controllers
         {
             _context = context;
         }
+        [HttpGet]
+        public JsonResult LoadSeats(int id)
+        {
+            // Lấy danh sách các vé có SuatChieuId trùng với id
+            var veList = _context.Ves.Where(v => v.SuatChieu == id).ToList();
+
+            // Lấy danh sách các IdGhe từ danh sách vé
+            var gheIds = veList.Select(v => v.Ghe).ToList();
+
+            // Lấy danh sách tên ghế dựa trên các IdGhe
+            var seatNames = _context.Ghes
+                .Where(g => gheIds.Contains(g.IdGhe))
+                .Select(g => g.TenGhe)
+                .ToList();
+
+            return Json(seatNames);
+        }
         public IActionResult Index()
         {
-            var loaiphim = _context.Phims.Select(x => x.TheLoai).ToString();
             var phimlist = _context.Phims.ToList();
-            var theloailist = _context.LoaiPhims.Where(x => x.IdLP == loaiphim);
             var cachieulist = _context.CaChieus.ToList();
             var ghelist = _context.Ghes.ToList();
             var viewModel = new Multimodel
@@ -32,19 +47,39 @@ namespace MVC_AHTBCINEMA.Controllers
             };
             return View(viewModel);
         }
-      
-        public IActionResult Details(string id) 
-        {
 
-            var phimlist =  _context.Phims.Where(m => m.IdPhim == id);
-            var cachieulist = _context.CaChieus.ToList();
+        public IActionResult Details(string id)
+        {
+            var phim = _context.Phims
+                .Include(p => p.LoaiPhim)
+                .SingleOrDefault(m => m.IdPhim == id);
+
+            if (phim == null)
+            {
+                return NotFound();
+            }
+
+            var cachieulist = _context.CaChieus
+                .Include(c => c.Phongs)
+                .Include(c => c.GioChieus)
+                .Where(c => c.Phim == id)
+                .ToList();
+
             var ghelist = _context.Ghes.ToList();
+
+            var suggestedMovies = _context.Phims
+                .Where(p => p.TheLoai == phim.TheLoai && p.IdPhim != phim.IdPhim)
+                .Take(4) // Limiting to 4 suggestions
+                .ToList();
+
             var viewModel = new Multimodel
             {
-                Phim = phimlist,
+                Phim = new List<Phim> { phim },
                 CaChieu = cachieulist,
-                Ghe = ghelist
+                Ghe = ghelist,
+                SuggestedMovies = suggestedMovies
             };
+
             return View(viewModel);
         }
     }
