@@ -51,7 +51,6 @@ namespace API_AHTBCINEMA.Controllers
             {
                 IdHD = product.IdHD,
                 IdVe = product.IdVe,
-                Combo = product.Combo,
                 NhanVien = product.NhanVien,
                 KhachHang = product.KhachHang,
                 KhuyenMai = product.KhuyenMai,
@@ -110,11 +109,11 @@ namespace API_AHTBCINEMA.Controllers
         private async Task<bool> RelatedEntitiesExist(HoaDon hoaDon)
         {
             var existingVe = await _context.Ves.AnyAsync(x => x.IdVe == hoaDon.IdVe);
-            var existingCombo = await _context.DoAnvaNuocs.AnyAsync(x => x.IdComBo == hoaDon.Combo);
+
             var existingNhanVien = await _context.NhanViens.AnyAsync(x => x.IdNV == hoaDon.NhanVien);
             var existingKhachHang = await _context.KhachHangs.AnyAsync(x => x.IdKH == hoaDon.KhachHang);
             var existingKhuyenMai = await _context.KhuyenMais.AnyAsync(x => x.IdKM == hoaDon.KhuyenMai);
-            return existingVe && existingCombo && existingNhanVien && existingKhachHang;
+            return existingVe && existingNhanVien && existingKhachHang;
         }
 
         // Phương thức cập nhật thuộc tính của Hóa đơn

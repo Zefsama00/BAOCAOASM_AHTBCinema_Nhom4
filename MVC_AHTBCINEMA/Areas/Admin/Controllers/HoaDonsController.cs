@@ -23,7 +23,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/HoaDons
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.HoaDons.Include(h => h.Combos).Include(h => h.KhachHangs).Include(h => h.NhanViens).Include(h => h.Ve);
+            var dBCinemaContext = _context.HoaDons.Include(h => h.KhachHangs).Include(h => h.NhanViens).Include(h => h.Ve);
             return View(await dBCinemaContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var hoaDon = await _context.HoaDons
-                .Include(h => h.Combos)
                 .Include(h => h.KhachHangs)
                 .Include(h => h.NhanViens)
                 .Include(h => h.Ve)
@@ -72,7 +71,6 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
@@ -92,7 +90,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
+    
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "GiaVe", hoaDon.IdVe);
@@ -131,7 +129,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Combo"] = new SelectList(_context.DoAnvaNuocs, "IdComBo", "TenCombo", hoaDon.Combo);
+ 
             ViewData["KhachHang"] = new SelectList(_context.KhachHangs, "IdKH", "TenKH", hoaDon.KhachHang);
             ViewData["NhanVien"] = new SelectList(_context.NhanViens, "IdNV", "TenNV", hoaDon.NhanVien);
             ViewData["IdVe"] = new SelectList(_context.Ves, "IdVe", "IdVe", hoaDon.IdVe);
@@ -147,7 +145,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var hoaDon = await _context.HoaDons
-                .Include(h => h.Combos)
+
                 .Include(h => h.KhachHangs)
                 .Include(h => h.NhanViens)
                 .Include(h => h.Ve)

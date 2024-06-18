@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MVC_AHTBCINEMA.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
@@ -99,34 +100,14 @@ namespace MVC_AHTBCINEMA.Controllers
 
             //GioChieu
             var giochieu = _context.GioChieus.FirstOrDefault(n => n.IdGioChieu == gioChieuId);
-            var khuyenmai = 1;
-            var ngaykhuyenmai = cachieu.CaChieus.NgayChieu.DayOfWeek;
-            if(ngaykhuyenmai == DayOfWeek.Thursday || ngaykhuyenmai == DayOfWeek.Tuesday) 
+            int khuyenmai = 2;
+            DayOfWeek ngaykhuyenmai = cachieu.CaChieus.NgayChieu.DayOfWeek;
+
+            if (ngaykhuyenmai == DayOfWeek.Thursday || ngaykhuyenmai == DayOfWeek.Tuesday)
             {
-                khuyenmai = 1;
+                khuyenmai = 1; // Giảm giá 1
             }
-            else
-            {
-                khuyenmai = 0;
-            }
-            var phantramkm = _context.KhuyenMais.FirstOrDefault(x=>x.IdKM == khuyenmai);
-            var phantram = 0;
-            if(phantramkm != null)
-            {
-                phantram = phantramkm.Phantram;
-            }
-            var taohoadon = new HoaDon
-            {
-                
-                IdVe = ve.IdVe,
-                Combo = "CB1",
-                NhanVien = "NV1",
-                KhachHang = userid.IdUser,
-                KhuyenMai = khuyenmai,
-                TongTien = ve.GiaVe - (ve.GiaVe * phantram/100),
-                TrangThai = "Đang chờ duyệt"
-            };
-           
+      
             // Chuẩn bị ViewModel để gửi tới view
             var viewModel = new Multimodel
             {
@@ -135,9 +116,68 @@ namespace MVC_AHTBCINEMA.Controllers
                 GioChieu = new List<GioChieu> {giochieu },
                 Ve = new List<Ve> { ve },
                 Phim = new List<Phim> { phim },
+                KhuyenMai = _context.KhuyenMais.Where(g => g.IdKM == khuyenmai).ToList(),
+               
             };
 
             return View(viewModel); // Trả về view với viewModel đã tạo
         }
+        [HttpPost]
+        public IActionResult CreateInvoice(string id, string idphim, int gioChieuId, string username)
+        {
+            // Tìm vé dựa trên id ghế
+            var ve = _context.Ves.FirstOrDefault(x => x.Ghe == id);
+            var phim = _context.Phims.FirstOrDefault(f => f.IdPhim == idphim);
+            // Lấy thông tin ca chiếu dựa trên gioChieuId
+            var cachieu = _context.GioChieus
+                .Include(c => c.CaChieus) // Đảm bảo load thông tin phim
+                .FirstOrDefault(x => x.IdGioChieu == gioChieuId);
+            var userid = _context.Users.Where(x => x.Username == username).FirstOrDefault();
+
+            // Giả sử logic tính khuyến mãi ở đây, bạn có thể thay đổi logic tùy vào yêu cầu thực tế
+            int khuyenmai = 2;
+
+            DayOfWeek ngaykhuyenmai = cachieu.CaChieus.NgayChieu.DayOfWeek;
+
+            if (ngaykhuyenmai == DayOfWeek.Thursday || ngaykhuyenmai == DayOfWeek.Tuesday)
+            {
+                khuyenmai = 1; // Giảm giá 1
+            }
+            var phantramkm = _context.KhuyenMais.FirstOrDefault(x => x.IdKM == khuyenmai);
+            var phantram = 0;
+            if (phantramkm != null)
+            {
+                phantram = phantramkm.Phantram;
+            }
+
+            // Tạo hóa đơn mới
+            var taohoadon = new HoaDon
+            {
+                IdVe = ve.IdVe,
+                NhanVien = "NV1", // Giả sử bạn có mã nhân viên cố định
+                KhachHang = userid.IdUser,
+                KhuyenMai = khuyenmai,
+                TongTien = ve.GiaVe - (ve.GiaVe * phantram / 100), // Tính tổng tiền sau khi áp dụng khuyến mãi
+                TrangThai = "Đang chờ duyệt"
+            };
+
+            // Lưu hóa đơn vào cơ sở dữ liệu
+            _context.HoaDons.Add(taohoadon);
+            _context.SaveChanges();
+
+            // Chuẩn bị ViewModel để gửi tới view
+            var viewModel = new Multimodel
+            {
+                CaChieu = new List<CaChieu> { cachieu.CaChieus },
+                Ghe = _context.Ghes.Where(g => g.IdGhe == id).ToList(),
+                GioChieu = new List<GioChieu> { cachieu },
+                Ve = new List<Ve> { ve },
+                Phim = new List<Phim> { phim },
+                KhuyenMai = _context.KhuyenMais.Where(g => g.IdKM == khuyenmai).ToList(),
+            };
+
+            return View("ThanhToan", viewModel); // Trả về view "ThanhToan" với viewModel đã tạo
+        }
+
     }
 }
