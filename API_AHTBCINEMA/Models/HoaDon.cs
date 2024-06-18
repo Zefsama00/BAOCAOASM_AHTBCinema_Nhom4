@@ -25,7 +25,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         public KhachHang KhachHangs { get; set; }
         [ForeignKey("KhuyenMais")]
         [Required]
-        public int KhuyenMai { get; set; }
+        public int? KhuyenMai { get; set; }
         public KhuyenMai KhuyenMais { get; set; }
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Tổng tiền không được nhỏ hơn không")]

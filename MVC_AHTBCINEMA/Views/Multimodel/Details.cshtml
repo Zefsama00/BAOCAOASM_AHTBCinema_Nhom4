@@ -1,7 +1,10 @@
-﻿@model MVC_AHTBCINEMA.Model.Multimodel
+﻿@using Microsoft.AspNetCore.Http
+@model MVC_AHTBCINEMA.Model.Multimodel
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string user = Context.Session.GetString("Username");
+    bool isLoginIN = !string.IsNullOrEmpty(user);
 }
 <!DOCTYPE html>
 <html>
@@ -84,7 +87,7 @@
                                                             @foreach (var giochieu in cachieu.GioChieus.Where(gc => gc.Cachieu == cachieu.IdCaChieu))
                                                             {
                                                                 <div class="btn-group me-2" role="group">
-                                                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" class="btn btn-outline-primary time-slot">
+                                                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" data-phim-id="@phim.IdPhim" class="btn btn-outline-primary time-slot">
                                                                         @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
                                                                     </a>
                                                                 </div>
@@ -145,37 +148,40 @@
                 $('#showtimes').toggle();
             });
 
-            $('.time-slot').click(function () {
+            $('.time-slot').click(function (event) {
+                event.preventDefault();
                 var gioChieuId = $(this).data('id');
-                loadSeats(gioChieuId);
-
-                function loadSeats(gioChieuId) {
-                    $.ajax({
-                        url: '@Url.Action("LoadSeats", "Multimodel")',
-                        type: 'GET',
-                        data: { id: gioChieuId },
-                        success: function (data) {
-                            console.log('AJAX success:', data); // Ghi lại phản hồi
-                            var seatContainer = $("#seat-container");
-                            seatContainer.empty();
-                            if (data && data.length > 0) {
-                                $.each(data, function (index, seatName) {
-                                    var seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
-                                        '<a class="btn btn-outline-primary" href="/Home/Pay">' + seatName + '</a>' +
-                                        '</div>';
-                                    seatContainer.append(seatHtml);
-                                });
-                            } else {
-                                seatContainer.append('<p>Không có ghế nào.</p>');
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Lỗi AJAX:', xhr.responseText, status, error);
-                            alert('Không tải được ghế. Vui lòng kiểm tra console để biết thêm chi tiết.');
-                        }
-                    });
-                }
+                var phimId = $(this).data('phim-id');
+                loadSeats(gioChieuId, phimId);
             });
+
+            function loadSeats(gioChieuId, phimId) {
+                $.ajax({
+                    url: '/Multimodel/LoadSeats', // Đường dẫn tuyệt đối hoặc tương đối phù hợp với ứng dụng của bạn
+                    type: 'GET',
+                    data: { id: gioChieuId, gioChieuId: gioChieuId }, // Truyền thêm gioChieuId vào data
+                    success: function (data) {
+                        console.log('AJAX success:', data); // Ghi lại phản hồi
+                        var seatContainer = $("#seat-container");
+                        seatContainer.empty();
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, seat) {
+                                var seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
+                                    '<a class="btn btn-outline-primary" href="/Multimodel/ThanhToan/' + seat.id + '?idphim=' + phimId + '&gioChieuId=' + gioChieuId + '&username=' + '@user' + '">' + seat.name + '</a>' +
+                                    '</div>';
+
+                                seatContainer.append(seatHtml);
+                            });
+                        } else {
+                            seatContainer.append('<p>Không có ghế nào.</p>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Lỗi AJAX:', xhr.responseText, status, error);
+                        alert('Không tải được ghế. Vui lòng kiểm tra console để biết thêm chi tiết.');
+                    }
+                });
+            }
         });
     </script>
 </body>

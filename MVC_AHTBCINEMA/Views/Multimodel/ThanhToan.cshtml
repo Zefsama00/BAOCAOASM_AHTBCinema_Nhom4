@@ -205,17 +205,26 @@
                             <div class="row">
                                 <div class="col-lg-5 mb-lg-0 mb-3">
                                     <p class="h4 mb-0">Thông tin</p>
-                                   
-                               
-                                     @foreach (var caChieu in Model.CaChieu)
+                                    @foreach (var Phims in Model.Phim)
                                     {
                                         <p class="mb-0">
                                             <span class="fw-bold">Tên phim:</span>
-                                            <span class="c-green">@caChieu.Phims.TenPhim </span>
+                                            <span class="c-green">@Phims.TenPhim </span>
                                         </p>
+                                    }
+
+                                     @foreach (var caChieu in Model.CaChieu)
+                                    {
                                         <p class="mb-0">
                                             <span class="fw-bold">Ngày chiếu:</span>
-                                            <span class="c-green">@caChieu.NgayChieu</span>
+                                            <span class="c-green">@caChieu.NgayChieu.Date.ToShortDateString()</span>
+                                        </p>
+                                    }
+                                    @foreach (var gioChieu in Model.GioChieu)
+                                    {
+                                        <p class="mb-0">
+                                            <span class="fw-bold">Giờ chiếu:</span>
+                                            <span class="c-green">@gioChieu.GioBatDau - @gioChieu.GioKetThuc</span>
                                         </p>
                                     }
                                      @foreach (var ve in Model.Ve)
@@ -225,6 +234,10 @@
                                             <span class="c-green">@ve.GiaVe.ToString("N0") VNĐ</span>
                                         </p>
                                     }
+                                    <p class="mb-0">
+                                        <span class="fw-bold">Tổng tiền:</span>
+                                        <span class="c-green">("N0") VNĐ</span>
+                                    </p>
                                 </div>
                                 <div class="col-lg-7">
                                     <form action="" class="form">
