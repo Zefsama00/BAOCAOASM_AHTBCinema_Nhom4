@@ -1,0 +1,54 @@
+﻿@model IEnumerable<API_AHTBCINEMA.Models.GioChieu>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Giờ kết thúc
+            </th>
+            <th>
+                Giờ kết thúc
+            </th>
+            <th>
+                Ca Chiếu
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GioBatDau)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GioKetThuc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CaChieus.IdCaChieu)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdGioChieu">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdGioChieu">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdGioChieu">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

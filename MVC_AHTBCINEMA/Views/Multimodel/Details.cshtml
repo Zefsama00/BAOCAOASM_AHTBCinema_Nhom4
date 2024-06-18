@@ -3,15 +3,13 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<!DOCTYPE html>
+<html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.awesome.com/fontawesome/5.15.3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.1.1/js/all.js" integrity="sha384-BtvRZcyfv4r0x/phJt9Y9HhnN5ur1Z+kZbKVgzVBAlQZX4jvAuImlIz+bG7TS00a" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
         .marquee {
@@ -22,124 +20,184 @@
     </style>
 </head>
 <body>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Chọn ghế</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                        <div class="row g-2">
-                            @foreach (var ghe in Model.Ghe)
-                            {
-                                <div class="col-1 m-3 d-flex align-items-center justify-content-center">
-                                    <a class="btn btn-outline-primary" href="@Url.Action("ThanhToan", "Multimodel", new { id = ghe.IdGhe, idphim = Model.Phim.First().IdPhim })">@ghe.TenGhe</a>
-                                </div>
-                            }
-                        </div>
-                            <div class="row g-2">
-                                <!-- Thêm các ghế của hàng thứ 2 tương tự -->
-                            </div>
-                            <!-- Thêm các hàng khác tương tự -->
+    <!-- Modal for seat selection -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Chọn ghế</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row g-2" id="seat-container">
+                            <!-- Ghế sẽ được tải và hiển thị ở đây -->
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                   
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </div>
         </div>
-         <div class="container">
-            <div class="row">
+    </div>
 
-            @foreach(var phim in Model.Phim)
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            @foreach (var phim in Model.Phim)
             {
-                        <div class="col-lg-3 mt-3">
-                            <img src="/uploads/@phim.HinhAnh" alt="Tên Phim" class="img-fluid">
-                        </div>
-                <div class="col-lg-9 ">
+                <div class="col-lg-3 mt-3">
+                    <img src="/uploads/@phim.HinhAnh" alt="@phim.TenPhim" class="img-fluid">
+                </div>
+                <div class="col-lg-9">
                     <div class="black-bg p-4">
                         <div>
                             <h2>@phim.TenPhim</h2>
                             <p>Dạng Phim: <span class="badge bg-warning">@phim.DangPhim</span></p>
-                            <p>Thể Loại:  @phim.TheLoai</p>
+                            <p>Thể Loại: @phim.LoaiPhim.TenLoai</p>
                         </div>
                         <button class="btn btn-danger trailer-button floating-btn">Xem Trailer</button>
                     </div>
                     <div class="movie-details">
                         <h5>Diễn viên: @phim.DienVien</h5>
                         <h5>Thời lượng: @phim.ThoiLuong phút</h5>
-
                         <div class="row justify-content-center">
-                            <div class="col-6" asp-controller="CaChieutrangchu" asp-action="Index">
+                            <div class="col-6">
                                 <div class="bg-danger text-white p-3 text-center" id="cinema-info" style="cursor: pointer;">
                                     <h2>Mua Vé</h2>
                                 </div>
-                                <div class="border border-danger p-3" id="showtimes" style="display: none;">
-                                    @foreach (var cachieu in Model.CaChieu)
+                                    <div class="border border-danger p-3" id="showtimes" style="display: none;">
+                                    @if (Model.CaChieu.Any(cc => cc.Phim == phim.IdPhim))
                                     {
-                                        <p class="bg-dark text-white" style="padding: 5px;"> Ngày: @cachieu.NgayChieu.ToShortDateString()</p>
-                                        <div class="btn-toolbar justify-content-start" role="toolbar" aria-label="Lịch xem">
-                                            <div class="btn-group me-2" role="group">
-                                                <a data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-outline-primary time-slot">
-                                                    8h30 -
-                                                    11h30
-                                                </a>
+                                        @foreach (var cachieu in Model.CaChieu.Where(cc => cc.Phim == phim.IdPhim))
+                                        {
+                                            <div class="card mb-3">
+                                                <div class="card-header">
+                                                    <p class="card-text">Ngày chiếu: @cachieu.NgayChieu.ToString("dd/MM/yyyy")</p>
+                                                </div>
+                                                <div class="card-body">
+                                                    @if (cachieu.GioChieus != null && cachieu.GioChieus.Any())
+                                                    {
+                                                        <h6 class="card-subtitle mb-2 text-muted">Danh sách giờ chiếu:</h6>
+                                                        <div class="btn-toolbar justify-content-start" role="toolbar" aria-label="Lịch xem">
+                                                            @foreach (var giochieu in cachieu.GioChieus.Where(gc => gc.Cachieu == cachieu.IdCaChieu))
+                                                            {
+                                                                <div class="btn-group me-2" role="group">
+                                                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" class="btn btn-outline-primary time-slot">
+                                                                        @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                    </a>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Chưa có giờ chiếu</p>
+                                                    }
+                                                </div>
+                                                <div class="card-footer">
+                                                    <small class="text-muted">Trạng thái: @cachieu.TrangThai</small>
+                                                </div>
                                             </div>
-                                            <div class="btn-group me-2" role="group">
-                                                <a data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-outline-primary time-slot">
-                                                    13h30 -
-                                                    16h30
-                                                </a>
-                                            </div>
-                                            <div class="btn-group" role="group">
-                                                <a data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-outline-primary time-slot">
-                                                    18h30 -
-                                                    21h30
-                                                </a>
-                                            </div>
-                                            <!-- Thêm các khung giờ khác vào đây -->
-                                        </div>
+                                        }
                                     }
-
+                                    else
+                                    {
+                                        <p>Không có suất chiếu</p>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             }
+        </div>
 
+        <!-- Suggested Movies Section -->
+        <div class="suggested-movies mt-5">
+            <h3>Phim cùng thể loại</h3>
+            <div class="row">
+                @foreach (var suggestedMovie in Model.SuggestedMovies)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                        <div class="card">
+                            <img src="/uploads/@suggestedMovie.HinhAnh" class="card-img-top" alt="@suggestedMovie.TenPhim">
+                            <div class="card-body">
+                                <h5 class="card-title">@suggestedMovie.TenPhim</h5>
+                                <p class="card-text">Thể Loại: @suggestedMovie.LoaiPhim.TenLoai</p>
+                                <a href="/Multimodel/Details/@suggestedMovie.IdPhim" class="btn btn-primary">Xem Chi Tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
- 
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#cinema-info').click(function () {
+                $('#showtimes').toggle();
+            });
+
+            $('.time-slot').click(function () {
+                var gioChieuId = $(this).data('id');
+                loadSeats(gioChieuId);
+
+                function loadSeats(gioChieuId) {
+                    $.ajax({
+                        url: '@Url.Action("LoadSeats", "Multimodel")',
+                        type: 'GET',
+                        data: { id: gioChieuId },
+                        success: function (data) {
+                            console.log('AJAX success:', data); // Ghi lại phản hồi
+                            var seatContainer = $("#seat-container");
+                            seatContainer.empty();
+                            if (data && data.length > 0) {
+                                $.each(data, function (index, seatName) {
+                                    var seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
+                                        '<a class="btn btn-outline-primary" href="/Home/Pay">' + seatName + '</a>' +
+                                        '</div>';
+                                    seatContainer.append(seatHtml);
+                                });
+                            } else {
+                                seatContainer.append('<p>Không có ghế nào.</p>');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Lỗi AJAX:', xhr.responseText, status, error);
+                            alert('Không tải được ghế. Vui lòng kiểm tra console để biết thêm chi tiết.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
+
 <style>
     .black-bg {
         background-color: #000;
         color: #fff;
         padding: 10px;
-        margin-bottom: 20;
+        margin-bottom: 20px;
         display: flex;
-        /* Sử dụng Flexbox */
         justify-content: space-between;
-        /* Căn cách đều hai phần tử */
         align-items: center;
-        /* Căn giữa theo chiều dọc */
     }
 
     .trailer-button {
         order: 2;
         border-radius: 50px;
-        /* Độ cong lớn để tạo hình elip */
         border: none;
-        /* Xóa border mặc định */
         padding: 10px 20px;
-        /* Điều chỉnh khoảng cách để vừa với hình elip */
     }
 
     .movie-details {
@@ -151,34 +209,14 @@
     .floating-btn {
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0px 4px 5px rgba(75, 85, 96, 0.7);
+        position: relative;
+        overflow: hidden;
     }
 
         .floating-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 1px 1px 5px 5px rgba(101, 101, 106, 0.9);
+            background: red;
         }
 </style>
-<script>
-    document.getElementById('cinema-info').addEventListener('click', function () {
-        var showtimesDiv = document.getElementById('showtimes');
-        if (showtimesDiv.style.display === 'none') {
-            showtimesDiv.style.display = 'block';
-        } else {
-            showtimesDiv.style.display = 'none';
-        }
-    });
-    $(document).ready(function () {
-        // Add focus and blur events to the button for hover effect
-        $(".floating-btn").on("mouseenter", function () {
-            $(this).css({ "transform": "translateY(-3px)", "box-shadow": "0px 7px 10px rgba(0, 123, 255, 0.9)" });
-        }).on("mouseleave", function () {
-            $(this).css({ "transform": "translateY(0px)", "box-shadow": "0px 4px 5px rgba(0, 123, 255, 0.7)" });
-        });
-    });
-</script>
