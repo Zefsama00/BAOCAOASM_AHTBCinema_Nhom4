@@ -26,7 +26,11 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             var dBCinemaContext = _context.HoaDons.Include(h => h.Combos).Include(h => h.KhachHangs).Include(h => h.KhuyenMais).Include(h => h.NhanViens).Include(h => h.Ve);
             return View(await dBCinemaContext.ToListAsync());
         }
-
+        public async Task<IActionResult> Index1()
+        {
+            var dBCinemaContext = _context.HoaDons.Include(h => h.Combos).Include(h => h.KhachHangs).Include(h => h.KhuyenMais).Include(h => h.NhanViens).Include(h => h.Ve);
+            return View(await dBCinemaContext.ToListAsync());
+        }
         // GET: Admin/HoaDons/Details/5
         public async Task<IActionResult> Details(int? id)
         {
