@@ -4,14 +4,16 @@ using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API_AHTBCINEMA.Migrations
 {
     [DbContext(typeof(DBCinemaContext))]
-    partial class DBCinemaContextModelSnapshot : ModelSnapshot
+    [Migration("20240618154908_dbblanthun")]
+    partial class dbblanthun
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,6 +101,9 @@ namespace API_AHTBCINEMA.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Combo")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("IdVe")
                         .HasColumnType("int");
 
@@ -118,6 +123,8 @@ namespace API_AHTBCINEMA.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdHD");
+
+                    b.HasIndex("Combo");
 
                     b.HasIndex("IdVe");
 
@@ -407,6 +414,10 @@ namespace API_AHTBCINEMA.Migrations
 
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.HoaDon", b =>
                 {
+                    b.HasOne("AHTBCinema_NHOM4_SD18301.Models.DoAnvaNuoc", "Combos")
+                        .WithMany("HoaDons")
+                        .HasForeignKey("Combo");
+
                     b.HasOne("AHTBCinema_NHOM4_SD18301.Models.Ve", "Ve")
                         .WithMany("HoaDons")
                         .HasForeignKey("IdVe")
@@ -424,6 +435,8 @@ namespace API_AHTBCINEMA.Migrations
                     b.HasOne("AHTBCinema_NHOM4_SD18301.Models.NhanVien", "NhanViens")
                         .WithMany("HoaDons")
                         .HasForeignKey("NhanVien");
+
+                    b.Navigation("Combos");
 
                     b.Navigation("KhachHangs");
 
@@ -474,6 +487,11 @@ namespace API_AHTBCINEMA.Migrations
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.CaChieu", b =>
                 {
                     b.Navigation("GioChieus");
+                });
+
+            modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.DoAnvaNuoc", b =>
+                {
+                    b.Navigation("HoaDons");
                 });
 
             modelBuilder.Entity("AHTBCinema_NHOM4_SD18301.Models.Ghe", b =>

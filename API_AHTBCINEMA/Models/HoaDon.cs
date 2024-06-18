@@ -13,10 +13,6 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [ForeignKey("Ve")]
         public int IdVe { get; set; }
         public Ve Ve { get; set; }
-        [ForeignKey("Combos")]
-        [DisplayFormat(DataFormatString = "{0:N0} VNĐ", ApplyFormatInEditMode = false)]
-        public string Combo { get; set; }
-        public DoAnvaNuoc Combos { get; set; }
         [ForeignKey("NhanViens")]
         public string NhanVien { get; set; }
         public NhanVien NhanViens { get; set; }

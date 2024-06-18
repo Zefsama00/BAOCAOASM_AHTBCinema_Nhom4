@@ -86,10 +86,6 @@ namespace ASM_AHTBCINEMA_NHOM4_SD18301.Data
               .HasOne<Ve>(p => p.Ve)
               .WithMany(c => c.HoaDons)
               .HasForeignKey(p => p.IdVe);
-            modelBuilder.Entity<HoaDon>()
-              .HasOne<DoAnvaNuoc>(p => p.Combos)
-              .WithMany(c => c.HoaDons)
-              .HasForeignKey(p => p.Combo);
             modelBuilder.Entity<Ve>()
               .HasOne<Ghe>(p=>p.Ghes)
               .WithOne(c => c.Ves);

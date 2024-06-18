@@ -1,8 +1,35 @@
-﻿@model MVC_AHTBCINEMA.Model.Multimodel
+﻿@using Microsoft.AspNetCore.Http
+@model MVC_AHTBCINEMA.Model.Multimodel
 @{
     ViewData["Title"] = "ThanhToan";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Lấy thông tin tài khoản đăng nhập từ Session
+    string user = Context.Session.GetString("Username");
+    bool isLoginIN = !string.IsNullOrEmpty(user);
+
+    // Khởi tạo totalAmount
+    float totalAmount = 0;
+
+    // Tính tổng số tiền dựa trên các vé (Ve) trong model
+    if (Model.Ve != null)
+    {
+        totalAmount = Model.Ve.Sum(ve => ve.GiaVe);
+    }
+
+    // Khởi tạo totalDiscount
+    float totalDiscount = 0;
+
+    // Tính tổng giảm giá dựa trên các khuyến mãi (KhuyenMai)
+    if (Model.KhuyenMai != null)
+    {
+        totalDiscount = totalAmount * Model.KhuyenMai.Sum(km => km.Phantram) / 100;
+    }
+
+    // Áp dụng giảm giá vào totalAmount
+    totalAmount -= totalDiscount;
 }
+
 
 <style>
 
@@ -234,20 +261,36 @@
                                             <span class="c-green">@ve.GiaVe.ToString("N0") VNĐ</span>
                                         </p>
                                     }
+                                    @foreach (var km in Model.KhuyenMai)
+                                    {
+                                        <p class="mb-0">
+                                            <span class="fw-bold">Khuyến Mãi:</span>
+                                            <span class="c-green">@km.KhuyenMaiName giảm @km.Phantram %</span>
+                                        </p>
+                                    }
                                     <p class="mb-0">
                                         <span class="fw-bold">Tổng tiền:</span>
-                                        <span class="c-green">("N0") VNĐ</span>
+                                        <span class="c-green">@totalAmount.ToString("N0") VNĐ</span>
                                     </p>
                                 </div>
                                 <div class="col-lg-7">
-                                    <form action="" class="form">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="btn btn-primary w-100" id="payBtn">Tạo mã giao dịch</div>
-                                            </div>
-                                            <div id="message" class="message"></div>
-                                        </div>
-                                    </form>
+                                    <div class="col-lg-5 mb-lg-0 mb-3">
+                                        <form id="paymentForm" action="@Url.Action("CreateInvoice", "Multimodel")" method="post">
+                                            <!-- Hiển thị chi tiết phim và thông tin thanh toán -->
+                                            <!-- Các trường ẩn để truyền thông tin cần thiết -->
+                                            <input type="hidden" name="id" value="@Model.Ghe.FirstOrDefault()?.IdGhe" />
+                                            <input type="hidden" name="idphim" value="@Model.Phim.FirstOrDefault()?.IdPhim" />
+                                            <input type="hidden" name="gioChieuId" value="@Model.GioChieu.FirstOrDefault()?.IdGioChieu" />
+                                            <input type="hidden" name="username" value="@user" />
+
+                                            <div class="btn btn-primary w-100" id="payBtn">Tạo mã giao dịch</div>
+                                        </form>
+                                        <div id="message" class="message"></div>
+                                        <p id="transactionCode" class="mb-0" style="font-size: 16px; font-weight: bold; display: none;">
+                                            Mã giao dịch của bạn: <span id="transactionId"></span>
+                                        </p>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -256,35 +299,91 @@
             </div>
         </div>
     </div>
+
+
 </body>
 <script>
-    // Biến cờ để theo dõi xem mã giao dịch đã được tạo hay chưa
-    var transactionCreated = false;
+    var transactionCreated = sessionStorage.getItem('transactionCreated') === 'true'; // Kiểm tra xem giao dịch đã được tạo hay chưa
+
+    // Hàm được gọi khi trang đã được load hoàn toàn
+    document.addEventListener('DOMContentLoaded', function () {
+        // Kiểm tra xem đã có giao dịch được tạo trước đó hay chưa
+        if (transactionCreated) {
+            // Lấy mã giao dịch từ sessionStorage và hiển thị lên giao diện
+            var savedTransactionId = sessionStorage.getItem('transactionId');
+            var transactionIdSpan = document.getElementById('transactionId');
+            transactionIdSpan.innerText = savedTransactionId;
+
+            var transactionCode = document.getElementById('transactionCode');
+            transactionCode.style.display = 'block';
+        }
+    });
 
     document.getElementById('payBtn').addEventListener('click', function () {
-        // Kiểm tra nếu mã giao dịch đã được tạo
         if (transactionCreated) {
             alert('Mã giao dịch đã được tạo. Vui lòng kiểm tra lại.');
             return;
         }
 
-        // Hiển thị thông báo đợi duyệt
         var messageDiv = document.getElementById('message');
         messageDiv.style.display = 'block';
         messageDiv.innerHTML = 'Đang tạo mã giao dịch...';
 
-        // Tạo mã giao dịch ngẫu nhiên
         var transactionId = 'GD' + Math.floor(Math.random() * 1000000);
-        transactionCreated = true; // Đánh dấu mã giao dịch đã được tạo
+        transactionCreated = true;
 
-        // Vô hiệu hóa nút "Thanh toán"
+        sessionStorage.setItem('transactionCreated', 'true'); // Đánh dấu đã tạo giao dịch
+        sessionStorage.setItem('transactionId', transactionId); // Lưu mã giao dịch vào sessionStorage
+
         document.getElementById('payBtn').disabled = true;
+        document.getElementById('payBtn').innerText = 'Đang xử lý...';
 
-        // Cập nhật thông báo với mã giao dịch sau một thời gian ngắn
+        // Giả lập gửi biểu mẫu sau một độ trễ
         setTimeout(function () {
-            messageDiv.innerHTML = 'Tạo mã giao dịch thành công. Mã giao dịch của bạn là: ' + transactionId + '.<br>Nếu chuyển sai nội dung thanh toán hãy liên hệ chăm sóc khách hàng để được an ủi';
-        }, 2000); // Thời gian chờ 2 giây (2000 milliseconds)
+            messageDiv.innerHTML = 'Tạo mã giao dịch thành công.';
+            messageDiv.innerHTML += ' Mã giao dịch của bạn là: ' + transactionId;
+
+            // Hiển thị mã giao dịch lên giao diện
+            var transactionIdSpan = document.getElementById('transactionId');
+            transactionIdSpan.innerText = transactionId;
+
+            var transactionCode = document.getElementById('transactionCode');
+            transactionCode.style.display = 'block';
+
+            // Tạo và gửi biểu mẫu
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '@Url.Action("CreateInvoice", "Multimodel")');
+
+            var hiddenFieldId = document.createElement('input');
+            hiddenFieldId.setAttribute('type', 'hidden');
+            hiddenFieldId.setAttribute('name', 'id');
+            hiddenFieldId.setAttribute('value', '@Model.Ghe.FirstOrDefault()?.IdGhe');
+
+            var hiddenFieldIdPhim = document.createElement('input');
+            hiddenFieldIdPhim.setAttribute('type', 'hidden');
+            hiddenFieldIdPhim.setAttribute('name', 'idphim');
+            hiddenFieldIdPhim.setAttribute('value', '@Model.Phim.FirstOrDefault()?.IdPhim');
+
+            var hiddenFieldGioChieuId = document.createElement('input');
+            hiddenFieldGioChieuId.setAttribute('type', 'hidden');
+            hiddenFieldGioChieuId.setAttribute('name', 'gioChieuId');
+            hiddenFieldGioChieuId.setAttribute('value', '@Model.GioChieu.FirstOrDefault()?.IdGioChieu');
+
+            var hiddenFieldUsername = document.createElement('input');
+            hiddenFieldUsername.setAttribute('type', 'hidden');
+            hiddenFieldUsername.setAttribute('name', 'username');
+            hiddenFieldUsername.setAttribute('value', '@user');
+
+            form.appendChild(hiddenFieldId);
+            form.appendChild(hiddenFieldIdPhim);
+            form.appendChild(hiddenFieldGioChieuId);
+            form.appendChild(hiddenFieldUsername);
+
+            document.body.appendChild(form);
+            form.submit();
+        }, 2000); // Điều chỉnh thời gian chờ theo nhu cầu
     });
+
+
 </script>
-
-
