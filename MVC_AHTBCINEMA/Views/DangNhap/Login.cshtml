@@ -38,38 +38,45 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <!--header start here-->
     <div class="header">
         <div class="header-main">
+            @if (TempData["ErroLoginMessage"] != null)
+            {
+                <div id="ErroLoginAlert" class="alert alert-success alert-dismissible fade show text-danger" role="alert" style="">
+                    @TempData["ErroLoginMessage"]
+                </div>
+            }
             <h1 class="text-white">Đăng nhập</h1>
             <div class="header-bottom">
-                <div class="header-right w3agile">
+                <div class="header-left-bottom agileinfo">
+                    @using (Html.BeginForm("Login", "DangNhap", FormMethod.Post))
+                    {
+                        <!-- Hiển thị thông báo lỗi tổng thể -->
+                        <form>
+                            <div class="mb-3">
+                                @Html.TextBoxFor(x => x.Username, new { @class = "form-control text-white", placeholder = "Email" })
+                            </div>
+                            <div class="mb-3">
+                                @Html.TextBoxFor(x => x.PassWord, new { @class = "form-control", placeholder = "Mật khẩu", type = "password" })
+                            </div>
 
-                    <div class="header-left-bottom agileinfo">
-                        @using (Html.BeginForm("Login", "DangNhap", FormMethod.Post))
-                        {
-                            <form>
-                                <div class="mb-3">
-                                    @Html.TextBoxFor(x => x.Username, new { @class = "form-control text-white", placeholder = "Email" })
+                          
 
-                                </div>
-                                <div class="mb-3">
-                                    @Html.TextBoxFor(x => x.PassWord, new { @class = "form-control", placeholder = "Enter password", type = "password" })
-                                </div>
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember">
-                                    <label class="form-check-label text-white" for="remember">Ghi nhớ</label>
-                                </div>
-                                <div class="forgot">
-                                    <h6><a href="#" class="text-white">Quên mật khẩu</a></h6>
-                                </div>
+                            <div class="forgot">
+                                <h6><a href="#" class="text-white">Quên mật khẩu</a></h6>
+                            </div>
 
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </form>
-                        }a
-                    </div>
+                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                        </form>
+                    }
                 </div>
 
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#ErroLoginAlert').fadeIn().delay(3000).fadeOut('slow');
+        });
+    </script>
     <!--header end here-->
     <!--footer start here-->
     <div class="copyright">

@@ -9,21 +9,26 @@ using System.Threading.Tasks;
 using API_AHTBCINEMA.Models;
 using System;
 using MVC_ASM_AHTBCinema_NHOM4_SD18301.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace MVC_AHTBCINEMA.Controllers
 {
     public class DangNhapController : Controller
     {
         private readonly DBCinemaContext _context;
-        public  PasswordHasher _passwordHasher;
+
         public DangNhapController(DBCinemaContext context)
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             return View();
         }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -36,39 +41,39 @@ namespace MVC_AHTBCINEMA.Controllers
                 return RedirectToAction("Index", "Multimodel");
             }
         }
+
         [HttpPost]
         public IActionResult Login(User user)
         {
-          
-            if (HttpContext.Session.GetString("Username") == null)
+            var u = _context.Users.FirstOrDefault(x => x.Username == user.Username && x.PassWord == user.PassWord);
+
+            if (u != null)
             {
-              
-
-                var u = _context.Users.Where(x => x.Username.Equals(user.Username)
-                && x.PassWord.Equals(user.PassWord)).FirstOrDefault();
-
-                if (u != null)
+                if (u.Role == "nhanvien" || u.Role == "admin")
                 {
-                    if(u.Role == "nhanvien" || u.Role == "admin")
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "Admin" });
-                    }
-                    HttpContext.Session.SetString("Username", u.Username.ToString());
-                   
-                     return RedirectToAction("Index", "Multimodel");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
-                else
-                {
-                    return RedirectToAction("Index", "Multimodel");
-                }
+
+                HttpContext.Session.SetString("Username", u.Username.ToString());
+                return RedirectToAction("Index", "Multimodel");
             }
+            else
+            {
+                TempData["ErroLoginMessage"] = "Tài khoản hoặc mật khẩu không chính xác.";
+                ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác.");
+
+            }
+         
             return View();
         }
+
+
         public ActionResult Logout()
         {
-            HttpContext.Session.Clear();//remove session
+            HttpContext.Session.Clear(); // Xóa session
             return RedirectToAction("Login");
         }
+
         // GET: Admin/KhachHangs/Create
         public IActionResult Create()
         {
@@ -76,8 +81,6 @@ namespace MVC_AHTBCINEMA.Controllers
         }
 
         // POST: Admin/KhachHangs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdKH,TenKH,SDT,NamSinh,Email,Password")] KhachHang khachHang, [Bind("IdUser,Username,PassWord,Role")] User user)
@@ -89,12 +92,15 @@ namespace MVC_AHTBCINEMA.Controllers
                     var demkh = _context.KhachHangs.Count() + 1;
                     khachHang.IdKH = "KH" + demkh.ToString();
                     khachHang.TrangThai = "Hoạt động";
+
                     // Lưu khách hàng vào database
                     _context.KhachHangs.Add(khachHang);
                     int add = await _context.SaveChangesAsync();
+
                     string catchuoi = khachHang.Email.Substring(0, khachHang.Email.IndexOf("@"));
+
                     // Sau khi lưu thành công khách hàng, tạo người dùng
-                    if(add > 0) 
+                    if (add > 0)
                     {
                         user.IdUser = khachHang.IdKH;
                         user.Username = catchuoi;
@@ -103,8 +109,6 @@ namespace MVC_AHTBCINEMA.Controllers
                         _context.Users.Add(user);
                         await _context.SaveChangesAsync();
                     }
-                    // Thêm người dùng vào database
-                   
 
                     return RedirectToAction("Login");
                 }
@@ -118,6 +122,60 @@ namespace MVC_AHTBCINEMA.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Multimodel");
         }
-     
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmNewPassword, string usernameweb)
+        {
+           try
+            {
+                // Lấy thông tin người dùng từ session hoặc principal
+                string username = usernameweb; // Sử dụng tên người dùng từ principal
+
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Không tìm thấy người dùng.");
+                    return View();
+                }
+
+                // Kiểm tra mật khẩu hiện tại
+                if (user.PassWord != currentPassword)
+                {
+                    ModelState.AddModelError("", "Mật khẩu hiện tại không đúng.");
+                    return View();
+                }
+
+                // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới
+                if (newPassword != confirmNewPassword)
+                {
+                    ModelState.AddModelError("", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+                    return View();
+                }
+
+                // Cập nhật mật khẩu cho User
+                user.PassWord = newPassword;
+                _context.Users.Update(user);
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+
+                return RedirectToAction("Index", "Multimodel");
+            }
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ nếu có
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi thay đổi mật khẩu. Vui lòng thử lại sau.");
+                return View();
+            }
+        }
+
+
     }
 }

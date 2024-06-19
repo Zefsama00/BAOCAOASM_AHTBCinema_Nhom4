@@ -164,7 +164,10 @@ namespace MVC_AHTBCINEMA.Controllers
             // Lưu hóa đơn vào cơ sở dữ liệu
             _context.HoaDons.Add(taohoadon);
             _context.SaveChanges();
-
+            var ghe = _context.Ghes.FirstOrDefault(x => x.IdGhe == id);
+            ghe.TrangThai = "Đã có";
+            _context.Ghes.Update(ghe);
+            _context.SaveChanges();
             // Chuẩn bị ViewModel để gửi tới view
             var viewModel = new Multimodel
             {

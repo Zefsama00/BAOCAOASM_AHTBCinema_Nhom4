@@ -22,6 +22,12 @@
     </style>
 </head>
 <body>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <div class="container-fluid marquee">
         <marquee behavior="scroll" direction="right">Chào mừng đến trang AHTB Cinema</marquee>
     </div>
@@ -287,5 +293,9 @@
             }
             i++;
         }, 2000);
+        $(document).ready(function () {
+            $('#successAlert').fadeIn().delay(5000).fadeOut('slow');
+        });
     </script>
 }
+
