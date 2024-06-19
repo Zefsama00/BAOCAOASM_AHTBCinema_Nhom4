@@ -19,6 +19,9 @@
             font-weight: 500;
             color: red;
         }
+        img{
+            height: 250px;
+        }
     </style>
 </head>
 <body>
@@ -29,10 +32,10 @@
         </div>
     }
     <div class="container-fluid marquee">
-        <marquee behavior="scroll" direction="right">Chào mừng đến trang AHTB Cinema</marquee>
+       <br />
     </div>
     <div class="mb-5">
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="max-width: 50%; margin: auto;">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 850px; margin: auto; height: 350px">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -40,25 +43,13 @@
             </div>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="/Image/phim5.jpg" class="d-block w-100" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Naruto</h5>
-                        <p>Thể loại: Hành động, Võ thuật, Nhẫn giả, Phiêu lưu, Hài hước</p>
-                    </div>
+                    <img src="/Image/poster3.jpg" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item">
-                    <img src="/Image/phim6.jpg" class="d-block w-100" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Doraemon</h5>
-                        <p>Thể loại: phiêu lưu, hài hước và khoa học viễn tưởng</p>
-                    </div>
+                    <img src="/Image/poster2.jpg" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item">
-                    <img src="/Image/phim7.jpg" class="d-block w-100" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Oggy</h5>
-                        <p>Thể loại: hoạt hình ,hài hước và phiêu lưu</p>
-                    </div>
+                    <img src="/Image/poster5.jpg" class="d-block w-100" alt="...">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
@@ -75,32 +66,8 @@
         <div class="card border border-danger non-border" style="padding:40px; position:relative;">
             <span class="badge bg-danger non-border fs-5" style="position: absolute; top: -82px; left: 41px; transform: rotate(-90deg); writing-mode: vertical-lr; padding:20px 10px">Phổ biến</span>
             <div class="row">
-                <div class="col-md-3">
-                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" style="max-width: 100%; margin: auto;">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="/Image/phim1.jpg" class="d-block w-100" alt="First Product" style="height:200px">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/Image/phim3.jpg" class="d-block w-100" alt="Second Product" style="height:200px">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/Image/thienlongbatbo.jpg" class="d-block w-100" alt="Third Product" style="height:200px">
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <div class="row">
-
                         @foreach (var phim in Model.Phim.Take(4))
                         {
 
@@ -113,8 +80,6 @@
                                 </div>
                             </div>
                         }
-
-
                     </div>
                 </div>
             </div>
@@ -201,7 +166,7 @@
                             <div class="d-flex flex-column justify-content-between h-100">
                                 <img src="/Image/phim/z5446220342450_61f4d0026ebec8b36300f7c998df8da0.jpg" alt="Product 4" class="product-item">
                                 <div class="text-center">
-                                    <p class="mb-0">text</p>
+                                    <p class="mb-0"></p>
                                 </div>
                                 <a href="/Home/DetailsFilm" class="btn btn-danger">Xem ngay!</a>
                             </div>
