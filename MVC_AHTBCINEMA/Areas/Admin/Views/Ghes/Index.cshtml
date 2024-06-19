@@ -13,10 +13,10 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.TenGhe)</th>
-            <th>@Html.DisplayNameFor(model => model.Phongs)</th>
-            <th>@Html.DisplayNameFor(model => model.TrangThai)</th>
-            <th>@Html.DisplayNameFor(model => model.LoaiGhes)</th>
+            <th>Tên ghế</th>
+            <th>Số phòng</th>
+            <th>Trạng thái</th>
+            <th>Loại ghế</th>
             <th>Hoạt động</th>
         </tr>
     </thead>
@@ -29,8 +29,8 @@
                 <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
                 <td>@Html.DisplayFor(modelItem => item.LoaiGhes.TenLoaiGhe)</td>
                 <td>
-                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdGhe">Sửa</a> |
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdGhe">Thông tin</a> 
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdGhe">Sửa</a> 
+     @*                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdGhe">Thông tin</a>  *@
                    
                 </td>
             </tr>
