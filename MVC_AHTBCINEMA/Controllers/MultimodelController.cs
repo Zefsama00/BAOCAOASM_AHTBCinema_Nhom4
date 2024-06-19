@@ -33,7 +33,7 @@ namespace MVC_AHTBCINEMA.Controllers
             // Lấy danh sách tên ghế dựa trên các IdGhe
             var seatNames = _context.Ghes
                 .Where(g => gheIds.Contains(g.IdGhe))
-                .Select(g => new { Id = g.IdGhe, Name = g.TenGhe }) // Chỉ lấy Id và Name của ghế
+                .Select(g => new { Id = g.IdGhe, Name = g.TenGhe, trangThai = g.TrangThai }) // Đảm bảo trangThai viết đúng
                 .ToList();
 
             return Json(seatNames);
@@ -74,7 +74,7 @@ namespace MVC_AHTBCINEMA.Controllers
 
             var suggestedMovies = _context.Phims
                 .Where(p => p.TheLoai == phim.TheLoai && p.IdPhim != phim.IdPhim)
-                .Take(4) // Giới hạn chỉ lấy 4 bộ phim gợi ý
+                .Take(4)
                 .ToList();
 
             var viewModel = new Multimodel
