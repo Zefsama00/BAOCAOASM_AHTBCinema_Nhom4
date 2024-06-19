@@ -1,30 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace AHTBCinema_NHOM4_SD18301.ViewModels
 {
     public class BulkCreateGheViewModel
     {
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Please enter a positive number of seats.")]
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Vui lòng nhập một số nguyên dương.")]
+        [ValidateGheQuantity(ErrorMessage = "Số lượng ghế thêm vào vượt quá số lượng ghế có sẵn trong phòng.")]
         public int SoLuongGhe { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
         public string Phong { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
         public string TrangThai { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
         public string LoaiGhe { get; set; }
 
-        [Required]
-        [RegularExpression("[A-Z]", ErrorMessage = "Please enter a single uppercase letter.")]
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
+        [RegularExpression("^[A-Z]$", ErrorMessage = "Vui lòng nhập một chữ cái viết hoa duy nhất.")]
         public char StartingSeatLetter { get; set; }
 
-        [Required]
-        [Range(1, double.MaxValue, ErrorMessage = "Please enter a positive price.")]
-        public float GiaVe { get; set; } // Add this property for ticket price
+        [Required(ErrorMessage = "Vui lòng không để trống.")]
+        [Range(1, double.MaxValue, ErrorMessage = "Vui lòng nhập một số dương.")]
+        public float GiaVe { get; set; }
 
-        public int? GioChieuId { get; set; } // Changed from CaChieuId
+        public int? GioChieuId { get; set; }
+        public SelectList LoaiGheList { get; set; }
+        public SelectList PhongList { get; set; }
     }
 }

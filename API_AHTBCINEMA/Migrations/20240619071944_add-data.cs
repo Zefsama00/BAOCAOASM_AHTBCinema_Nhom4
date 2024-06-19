@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API_AHTBCINEMA.Migrations
 {
-    public partial class dbmoi : Migration
+    public partial class adddata : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,8 @@ namespace API_AHTBCINEMA.Migrations
                     SDT = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     NamSinh = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,7 +86,8 @@ namespace API_AHTBCINEMA.Migrations
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NamSinh = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ChucVu = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,7 +208,8 @@ namespace API_AHTBCINEMA.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GioBatDau = table.Column<TimeSpan>(type: "time", nullable: false),
                     GioKetThuc = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Cachieu = table.Column<int>(type: "int", nullable: false)
+                    Cachieu = table.Column<int>(type: "int", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,21 +257,15 @@ namespace API_AHTBCINEMA.Migrations
                     IdHD = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdVe = table.Column<int>(type: "int", nullable: false),
-                    Combo = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     NhanVien = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     KhachHang = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KhuyenMai = table.Column<int>(type: "int", nullable: false),
-                    TongTien = table.Column<float>(type: "real", nullable: false)
+                    KhuyenMai = table.Column<int>(type: "int", nullable: true),
+                    TongTien = table.Column<float>(type: "real", nullable: false),
+                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HoaDons", x => x.IdHD);
-                    table.ForeignKey(
-                        name: "FK_HoaDons_DoAnvaNuocs_Combo",
-                        column: x => x.Combo,
-                        principalTable: "DoAnvaNuocs",
-                        principalColumn: "IdComBo",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_HoaDons_KhachHangs_KhachHang",
                         column: x => x.KhachHang,
@@ -280,7 +277,7 @@ namespace API_AHTBCINEMA.Migrations
                         column: x => x.KhuyenMai,
                         principalTable: "KhuyenMais",
                         principalColumn: "IdKM",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_HoaDons_NhanViens_NhanVien",
                         column: x => x.NhanVien,
@@ -319,11 +316,6 @@ namespace API_AHTBCINEMA.Migrations
                 name: "IX_GioChieus_Cachieu",
                 table: "GioChieus",
                 column: "Cachieu");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HoaDons_Combo",
-                table: "HoaDons",
-                column: "Combo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HoaDons_IdVe",
@@ -366,13 +358,13 @@ namespace API_AHTBCINEMA.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "DoAnvaNuocs");
+
+            migrationBuilder.DropTable(
                 name: "HoaDons");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "DoAnvaNuocs");
 
             migrationBuilder.DropTable(
                 name: "KhachHangs");
