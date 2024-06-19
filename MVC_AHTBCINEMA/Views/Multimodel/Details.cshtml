@@ -20,6 +20,13 @@
             font-weight: 500;
             color: red;
         }
+
+        .bordered-title {
+            border: 2px solid black; /* Đặt kiểu viền */
+            display: inline-block; /* Để viền bao quanh chữ */
+            padding: 5px 10px; /* Đệm để tạo khoảng cách giữa viền và chữ */
+            border-radius: 5px; /* Bo tròn các góc viền */
+        }
     </style>
 </head>
 <body>
@@ -28,7 +35,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Chọn ghế</h5>
+                    <h4 class="modal-title w-100 text-center bordered-title" id="exampleModalLabel">Màn hình</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
                 <div class="modal-body">
@@ -157,18 +164,25 @@
 
             function loadSeats(gioChieuId, phimId) {
                 $.ajax({
-                    url: '/Multimodel/LoadSeats', // Đường dẫn tuyệt đối hoặc tương đối phù hợp với ứng dụng của bạn
+                    url: '/Multimodel/LoadSeats',
                     type: 'GET',
-                    data: { id: gioChieuId, gioChieuId: gioChieuId }, // Truyền thêm gioChieuId vào data
+                    data: { id: gioChieuId, gioChieuId: gioChieuId },
                     success: function (data) {
-                        console.log('AJAX success:', data); // Ghi lại phản hồi
+                        console.log('AJAX success:', data);
                         var seatContainer = $("#seat-container");
                         seatContainer.empty();
                         if (data && data.length > 0) {
                             $.each(data, function (index, seat) {
-                                var seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
-                                    '<a class="btn btn-outline-primary" href="/Multimodel/ThanhToan/' + seat.id + '?idphim=' + phimId + '&gioChieuId=' + gioChieuId + '&username=' + '@user' + '">' + seat.name + '</a>' +
-                                    '</div>';
+                                var seatHtml = '';
+                                if (seat.trangThai === 'Trống') { // Nếu trạng thái ghế là trống
+                                    seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
+                                        '<a class="btn btn-outline-primary" href="/Multimodel/ThanhToan/' + seat.id + '?idphim=' + phimId + '&gioChieuId=' + gioChieuId + '&username=' + '@user' + '">' + seat.name + '</a>' +
+                                        '</div>';
+                                } else { // Nếu trạng thái ghế không phải là trống
+                                    seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
+                                        '<button class="btn btn-danger" disabled>' + seat.name + '</button>' +
+                                        '</div>';
+                                }
 
                                 seatContainer.append(seatHtml);
                             });
