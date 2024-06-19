@@ -171,8 +171,14 @@
                         console.log('AJAX success:', data);
                         var seatContainer = $("#seat-container");
                         seatContainer.empty();
-                        if (data && data.length > 0) {
-                            $.each(data, function (index, seat) {
+
+                        var totalSeats = data.totalSeats;
+                        var availableSeats = data.availableSeats;
+
+                        
+
+                        if (data.seatNames && data.seatNames.length > 0) {
+                            $.each(data.seatNames, function (index, seat) {
                                 var seatHtml = '';
                                 if (seat.trangThai === 'Trống') { // Nếu trạng thái ghế là trống
                                     seatHtml = '<div class="col-1 m-3 d-flex align-items-center justify-content-center">' +
@@ -189,6 +195,11 @@
                         } else {
                             seatContainer.append('<p>Không có ghế nào.</p>');
                         }
+                        seatContainer.append('<p><span class="btn btn-outline-primary btn-circle"></span> Trống <span class="btn btn-danger btn-circle disabled"></span> Đã có</p>');
+                        // Hiển thị tổng số ghế và số ghế trống
+                        seatContainer.append('<p>Tổng số ghế: ' + availableSeats + '/' + totalSeats + '</p>');
+                        // Hiển thị modal
+                        $('#exampleModal').modal('show');
                     },
                     error: function (xhr, status, error) {
                         console.error('Lỗi AJAX:', xhr.responseText, status, error);
