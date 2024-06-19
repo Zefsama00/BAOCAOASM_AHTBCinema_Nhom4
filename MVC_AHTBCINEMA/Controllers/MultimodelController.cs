@@ -33,10 +33,13 @@ namespace MVC_AHTBCINEMA.Controllers
             // Lấy danh sách tên ghế dựa trên các IdGhe
             var seatNames = _context.Ghes
                 .Where(g => gheIds.Contains(g.IdGhe))
-                .Select(g => new { Id = g.IdGhe, Name = g.TenGhe, trangThai = g.TrangThai }) // Đảm bảo trangThai viết đúng
+                .Select(g => new { Id = g.IdGhe, Name = g.TenGhe, trangThai = g.TrangThai, tenghe = g.LoaiGhes.TenLoaiGhe })
                 .ToList();
 
-            return Json(seatNames);
+            var totalSeats = seatNames.Count;
+            var availableSeats = seatNames.Count(g => g.trangThai == "Trống");
+
+            return Json(new { totalSeats, availableSeats, seatNames });
         }
 
         public IActionResult Index()
