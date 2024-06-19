@@ -27,8 +27,8 @@
                 <td><img src="/uploads/@item.Hinhanh" alt="Alternate Text" style="max-width: 100px; max-height: 100px;" /></td>
                 <td>@Html.DisplayFor(modelItem => item.Gia)</td>
                 <td>
-                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdComBo">Sửa</a> |
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdComBo">Thông tin</a>
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdComBo">Sửa</a> 
+                   @*  <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdComBo">Thông tin</a> *@
                 </td>
             </tr>
         }

@@ -1,43 +1,84 @@
 ﻿@model AHTBCinema_NHOM4_SD18301.Models.Ve
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông tin vé";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<h1 class="text-center">Thông tin vé</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6 font-weight-bold">
+                            Tên vé:
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.TenVe)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            Giá vé:
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.GiaVe)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            Giờ bắt đầu:
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.GioChieus.GioBatDau)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            Giờ kết thúc:
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.GioChieus.GioKetThuc)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            Tên ghế:
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.Ghes.TenGhe)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer text-right">
+                    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>Ve</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenVe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenVe)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GiaVe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GiaVe)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GioChieus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GioChieus.IdGioChieu)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ghes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ghes.IdGhe)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IdVe">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card-title {
+        margin-bottom: 0;
+    }
+
+    .btn {
+        margin-right: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+</style>

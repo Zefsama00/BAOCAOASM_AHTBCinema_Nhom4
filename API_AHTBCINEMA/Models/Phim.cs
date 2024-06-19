@@ -13,6 +13,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [StringLength(50, ErrorMessage = "Tên phim tối đa 50 ký tự")]
         [Required(ErrorMessage = "Không được bỏ trống tên phim")]
         public string TenPhim { get; set; }
+        [Required(ErrorMessage ="Không được bỏ diễn viên")]
         public string DienVien { get; set; }
         [Required(ErrorMessage = "Không được bỏ trống dạng phim")]
         public string DangPhim { get; set; }
