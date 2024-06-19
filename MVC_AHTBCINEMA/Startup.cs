@@ -28,7 +28,8 @@ namespace MVC_AHTBCINEMA
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                // C?u hình các tùy ch?n phiên nh? th?i gian timeout
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
