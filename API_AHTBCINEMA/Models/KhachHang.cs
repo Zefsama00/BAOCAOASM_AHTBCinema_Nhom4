@@ -7,7 +7,6 @@ namespace AHTBCinema_NHOM4_SD18301.Models
     public class KhachHang
     {
         [Key]
-        [Required(ErrorMessage ="Không được để trống")]
         public string IdKH { get; set; }
         [Required(ErrorMessage = "Vui lòng không để trống tên Khách Hàng")]
         [StringLength(50, ErrorMessage = "Độ dài tối đa là 50")]
@@ -24,6 +23,7 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         [Required(ErrorMessage = "Vui lòng không để trống mật khẩu")]
 
         public string Password { get; set; }
+        public string TrangThai { get; set; }
         public string NgaySinhString => NamSinh.ToString("dd-MM-yyyy");
         public ICollection<HoaDon> HoaDons { get; set; }
     }

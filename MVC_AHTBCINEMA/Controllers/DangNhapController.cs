@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using MVC_AHTBCINEMA.Model;
 using System.Linq;
 using System.Threading.Tasks;
+using API_AHTBCINEMA.Models;
+using System;
+using MVC_ASM_AHTBCinema_NHOM4_SD18301.Models;
 
 namespace MVC_AHTBCINEMA.Controllers
 {
@@ -24,7 +27,7 @@ namespace MVC_AHTBCINEMA.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (HttpContext.Session.GetString("Email") == null)
+            if (HttpContext.Session.GetString("Username") == null)
             {
                 return View();
             }
@@ -34,27 +37,23 @@ namespace MVC_AHTBCINEMA.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Login(KhachHang user)
+        public IActionResult Login(User user)
         {
           
-            if (HttpContext.Session.GetString("Email") == null)
+            if (HttpContext.Session.GetString("Username") == null)
             {
               
 
-                var u = _context.KhachHangs.Where(x => x.Email.Equals(user.Email)
-                && x.Password.Equals(user.Password)).FirstOrDefault();
+                var u = _context.Users.Where(x => x.Username.Equals(user.Username)
+                && x.PassWord.Equals(user.PassWord)).FirstOrDefault();
 
-                if(user.Password == "admin" && user.Email == "admin")
-                {
-                    return RedirectToAction("Index", "Home", new { area = "Admin" });
-                }
-                if (user.Password == "844265" && user.Email == "Duydeptrai@gmail.com")
-                {
-                    return RedirectToAction("Index", "Home", new { area = "Admin" });
-                }
                 if (u != null)
                 {
-                    HttpContext.Session.SetString("Email", u.Email.ToString());
+                    if(u.Role == "nhanvien" || u.Role == "admin")
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    }
+                    HttpContext.Session.SetString("Username", u.Username.ToString());
                    
                      return RedirectToAction("Index", "Multimodel");
                 }
@@ -81,17 +80,44 @@ namespace MVC_AHTBCINEMA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdKH,TenKH,SDT,NamSinh,Email,Password")] KhachHang khachHang)
+        public async Task<IActionResult> Create([Bind("IdKH,TenKH,SDT,NamSinh,Email,Password")] KhachHang khachHang, [Bind("IdUser,Username,PassWord,Role")] User user)
         {
             if (ModelState.IsValid)
             {
-         
-                _context.KhachHangs.Add(khachHang);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    var demkh = _context.KhachHangs.Count() + 1;
+                    khachHang.IdKH = "KH" + demkh.ToString();
+                    khachHang.TrangThai = "Hoạt động";
+                    // Lưu khách hàng vào database
+                    _context.KhachHangs.Add(khachHang);
+                    int add = await _context.SaveChangesAsync();
+                    string catchuoi = khachHang.Email.Substring(0, khachHang.Email.IndexOf("@"));
+                    // Sau khi lưu thành công khách hàng, tạo người dùng
+                    if(add > 0) 
+                    {
+                        user.IdUser = khachHang.IdKH;
+                        user.Username = catchuoi;
+                        user.PassWord = khachHang.Password;
+                        user.Role = "User";
+                        _context.Users.Add(user);
+                        await _context.SaveChangesAsync();
+                    }
+                    // Thêm người dùng vào database
+                   
+
+                    return RedirectToAction("Login");
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý ngoại lệ nếu cần thiết
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại sau.");
+                    return View(khachHang); // Quay lại view để hiển thị thông tin và lỗi
+                }
             }
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Multimodel");
         }
+     
     }
 }

@@ -11,6 +11,5 @@ namespace AHTBCinema_NHOM4_SD18301.Models
         public string TenCombo { get; set; }
         public string Hinhanh { get; set; }
         public float Gia { get; set;}
-        public ICollection<HoaDon> HoaDons { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AHTBCinema_NHOM4_SD18301.Models;
 using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
+using AHTBCinema_NHOM4_SD18301.ViewModels;
 
 namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 {
@@ -26,7 +27,105 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             var dBCinemaContext = _context.Ghes.Include(g => g.LoaiGhes).Include(g => g.Phongs);
             return View(await dBCinemaContext.ToListAsync());
         }
+        [HttpGet]
+        public async Task<IActionResult> GetGioChieusByPhong(string phongId)
+        {
+            if (string.IsNullOrEmpty(phongId))
+            {
+                return Json(new List<SelectListItem>());
+            }
 
+            var gioChieus = await _context.GioChieus
+                .Where(gc => gc.CaChieus.Phong == phongId)
+                .Select(gc => new SelectListItem
+                {
+                    Value = gc.IdGioChieu.ToString(),
+                    Text = gc.GioBatDau.ToString("hh\\:mm") + " - " + gc.GioKetThuc.ToString("hh\\:mm") + " - " + gc.CaChieus.NgayChieu.ToString("dd/MM/yyyy") + " - " + gc.CaChieus.Phims.TenPhim
+                })
+                .ToListAsync();
+
+            return Json(gioChieus);
+        }
+        public IActionResult BulkCreate()
+        {
+            ViewBag.LoaiGhe = new SelectList(_context.LoaiGhes, "IdLoaiGhe", "TenLoaiGhe");
+            ViewBag.Phongs = new SelectList(_context.Phongs, "IdPhong", "SoPhong");
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkCreate(BulkCreateGheViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var lastGhe = await _context.Ghes
+                    .OrderByDescending(g => g.IdGhe)
+                    .FirstOrDefaultAsync();
+
+                int seatNumber = 1;
+                char seatLetter = model.StartingSeatLetter;
+
+                if (lastGhe != null)
+                {
+                    string lastIdGhe = lastGhe.IdGhe;
+                    // Extract the last seat number
+                    int lastSeatNumber;
+                    if (int.TryParse(lastIdGhe.Substring(1), out lastSeatNumber))
+                    {
+                        seatNumber = lastSeatNumber + 1;
+                    }
+                }
+
+                for (int i = 1; i <= model.SoLuongGhe; i++)
+                {
+                    string idGhe = seatLetter + seatNumber.ToString("D6");
+                    string tenGhe = seatLetter + seatNumber.ToString();
+
+                    var ghe = new Ghe
+                    {
+                        IdGhe = idGhe,
+                        TenGhe = tenGhe,
+                        Phong = model.Phong,
+                        TrangThai = model.TrangThai,
+                        LoaiGhe = model.LoaiGhe
+                    };
+
+                    _context.Add(ghe);
+
+                    string tenVe = "Ve " + model.Phong + " " + model.LoaiGhe;
+                    float giaVe = model.GiaVe;
+
+                    if (model.GioChieuId.HasValue)
+                    {
+                        var ve = new Ve
+                        {
+                            TenVe = tenVe,
+                            GiaVe = giaVe,
+                            SuatChieu = model.GioChieuId.Value, // Save GioChieuId to Ve
+                            Ghe = ghe.IdGhe,
+                        };
+
+                        _context.Add(ve);
+                    }
+
+                    seatNumber++;
+                    if (seatNumber > 999999)
+                    {
+                        seatNumber = 1;
+                        seatLetter++;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["LoaiGhe"] = new SelectList(_context.LoaiGhes, "IdLoaiGhe", "TenLoaiGhe", model.LoaiGhe);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", model.Phong);
+            return View(model);
+        }
         // GET: Admin/Ghes/Details/5
         public async Task<IActionResult> Details(string id)
         {

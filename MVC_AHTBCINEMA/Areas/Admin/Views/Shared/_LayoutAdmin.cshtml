@@ -48,7 +48,7 @@
                 <!-- Logout Button -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="/Account/Logout" class="btn btn-danger logout-btn">Đăng Xuất</a>
+                    <a asp-area="" asp-controller="DangNhap" asp-action="Logout" class="btn btn-danger logout-btn">Đăng Xuất</a>
                 </li>
             </ul>
         </nav>
@@ -80,7 +80,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="QLNhanVien" asp-action="GetAll" class="nav-link">
+                            <a asp-area="Admin" asp-controller="NhanViens" asp-action="Index" class="nav-link">
                                 <i class="nav-icon fas fa-user-tie"></i>
                                 <p>Quản Lý Nhân Viên</p>
                             </a>
@@ -99,10 +99,28 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="HoaDons" asp-action="Index" class="nav-link">
+                            <a class="nav-link">
                                 <i class="nav-icon fas fa-file-invoice"></i>
-                                <p>Quản Lý Hóa Đơn</p>
+                                <p>
+                                    Quản lý hóa đơn
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="HoaDons" asp-action="Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Đơn hàng đang chờ duyệt</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="HoaDons" asp-action="Index1" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Đơn hàng đã duyệt</p>
+                                    </a>
+                                </li>
+                               
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Ves" asp-action="Index">
