@@ -48,11 +48,11 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         }
         public IActionResult BulkCreate()
         {
-            ViewBag.LoaiGhe = new SelectList(_context.LoaiGhes, "IdLoaiGhe", "TenLoaiGhe");
-            ViewBag.Phongs = new SelectList(_context.Phongs, "IdPhong", "SoPhong");
-            return View();
+            var model = new BulkCreateGheViewModel();
+            model.LoaiGheList = new SelectList(_context.LoaiGhes, "IdLoaiGhe", "TenLoaiGhe");
+            model.PhongList = new SelectList(_context.Phongs, "IdPhong", "SoPhong");
+            return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -72,7 +72,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                     string lastIdGhe = lastGhe.IdGhe;
                     // Extract the last seat number
                     int lastSeatNumber;
-                    if (int.TryParse(lastIdGhe.Substring(1), out lastSeatNumber))
+                    if (int.TryParse(lastIdGhe.Substring(2), out lastSeatNumber))
                     {
                         seatNumber = lastSeatNumber + 1;
                     }
@@ -80,7 +80,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 
                 for (int i = 1; i <= model.SoLuongGhe; i++)
                 {
-                    string idGhe = seatLetter + seatNumber.ToString("D6");
+                    string idGhe = "GE" + seatNumber;
                     string tenGhe = seatLetter + seatNumber.ToString();
 
                     var ghe = new Ghe
@@ -111,11 +111,6 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                     }
 
                     seatNumber++;
-                    if (seatNumber > 999999)
-                    {
-                        seatNumber = 1;
-                        seatLetter++;
-                    }
                 }
 
                 await _context.SaveChangesAsync();

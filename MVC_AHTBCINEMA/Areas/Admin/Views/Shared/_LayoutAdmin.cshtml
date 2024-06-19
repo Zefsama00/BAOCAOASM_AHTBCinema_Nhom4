@@ -123,9 +123,39 @@
                             </ul>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>
+                                    Quản lý ca chiếu và giờ chiếu
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-controller="CaChieus" asp-action="Index" class="nav-link">
+                                        <i class="fas fa-film nav-icon"></i>
+                                        <p>Ca chiếu</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="GioChieus" asp-action="Index" class="nav-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <p>Giờ chiếu</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Ves" asp-action="Index">
                                 <i class="nav-icon fas fa-ticket-alt"></i>
                                 <p>Quản Lý Vé</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Phongs" asp-action="Index">
+                                <i class="nav-icon fas fa-ticket-alt"></i>
+                                <p>Quản Lý Phòng</p>
                             </a>
                         </li>
                     </ul>

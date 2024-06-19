@@ -9,28 +9,29 @@
 
 <h4>Thông tin Ghế</h4>
 <hr />
-<form asp-action="BulkCreate">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form id="bulkCreateForm" asp-action="BulkCreate">
+    <div class="text-danger" id="formErrorSummary"></div>
 
     <div class="row justify-content-center">
         <div class="form-group m-2 col-4">
             <label asp-for="SoLuongGhe" class="control-label">Số Lượng Ghế</label>
             <input asp-for="SoLuongGhe" required class="form-control" />
-            <span asp-validation-for="SoLuongGhe" class="text-danger"></span>
+            <span class="text-danger" asp-validation-for="SoLuongGhe" id="SoLuongGhe-error"></span>
         </div>
         <div class="form-group m-2 col-4">
             <label asp-for="Phong" class="control-label">Phòng</label>
-            <select asp-for="Phong" class="form-control" id="PhongDropdown" asp-items="@(new SelectList(ViewBag.Phongs, "Value", "Text"))"><option value="">-- Chọn Phòng --</option></select>
-            <span asp-validation-for="Phong" class="text-danger"></span>
+            <select asp-for="Phong" class="form-control" id="PhongDropdown" asp-items="Model.PhongList">
+                <option value="">-- Chọn Phòng --</option>
+            </select>
+            <span class="text-danger" id="Phong-error"></span>
         </div>
     </div>
     <div class="row justify-content-center">
         <div class="form-group m-2 col-4">
             <label asp-for="GioChieuId" class="control-label">Giờ Chiếu</label>
             <select asp-for="GioChieuId" class="form-control" id="GioChieuDropdown">
-                <option value="">-- Chọn Giờ Chiếu --</option>
             </select>
-            <span asp-validation-for="GioChieuId" class="text-danger"></span>
+            <span class="text-danger" id="GioChieuId-error"></span>
         </div>
         <div class="form-group m-2 col-4">
             <label asp-for="TrangThai" class="control-label">Trạng Thái</label>
@@ -38,26 +39,26 @@
                 <option value="Trống">Trống</option>
                 <option value="Đã có">Đã có</option>
             </select>
-            <span asp-validation-for="TrangThai" class="text-danger"></span>
+            <span class="text-danger" id="TrangThai-error"></span>
         </div>
     </div>
     <div class="row justify-content-center">
         <div class="form-group m-2 col-4">
             <label asp-for="LoaiGhe" class="control-label">Loại Ghế</label>
-            <select asp-for="LoaiGhe" class="form-control" asp-items="@(new SelectList(ViewBag.LoaiGhe, "Value", "Text"))"></select>
-            <span asp-validation-for="LoaiGhe" class="text-danger"></span>
+            <select asp-for="LoaiGhe" class="form-control" asp-items="Model.LoaiGheList"></select>
+            <span class="text-danger" id="LoaiGhe-error"></span>
         </div>
         <div class="form-group m-2 col-4">
             <label asp-for="StartingSeatLetter" class="control-label">Chữ cái ghế</label>
             <input asp-for="StartingSeatLetter" class="form-control" />
-            <span asp-validation-for="StartingSeatLetter" class="text-danger"></span>
+            <span class="text-danger" asp-validation-for="StartingSeatLetter" id="StartingSeatLetter-error"></span>
         </div>
     </div>
     <div class="row justify-content-center">
         <div class="form-group m-2 col-4">
             <label asp-for="GiaVe" class="control-label">Giá Vé</label>
-            <input asp-for="GiaVe"required type="number" class="form-control" />
-            <span asp-validation-for="GiaVe" class="text-danger"></span>
+            <input asp-for="GiaVe" required type="number" class="form-control" />
+            <span class="text-danger" asp-validation-for="GiaVe" id="GiaVe-error"></span>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -74,12 +75,12 @@
     document.getElementById('PhongDropdown').addEventListener('change', function () {
         var phongId = this.value;
         var gioChieuDropdown = document.getElementById('GioChieuDropdown');
-        gioChieuDropdown.innerHTML = '<option value="">-- Chọn Giờ Chiếu --</option>';
 
         if (phongId) {
             fetch('/Admin/Ghes/GetGioChieusByPhong?phongId=' + phongId)
                 .then(response => response.json())
                 .then(data => {
+                    gioChieuDropdown.innerHTML = ""; // Clear previous options
                     data.forEach(gioChieu => {
                         var option = document.createElement('option');
                         option.value = gioChieu.value;
@@ -95,4 +96,27 @@
             document.querySelector('input[type="submit"]').disabled = true;
         }
     });
+
+    // Lắng nghe sự kiện submit của form
+    $('#bulkCreateForm').submit(function (event) {
+        // Kiểm tra xem form có hợp lệ không
+        if (!$(this).valid()) {
+            // Nếu không hợp lệ, ngăn chặn sự kiện submit mặc định
+            event.preventDefault();
+
+            // Hiển thị thông báo lỗi cho từng trường
+            $('#formErrorSummary').html(''); // Xóa thông báo lỗi cũ
+            $('#bulkCreateForm .text-danger').each(function () {
+                var fieldName = $(this).prev('input, select').attr('id');
+                var errorMessage = $(this).text();
+                $('#formErrorSummary').append('<div>' + errorMessage + '</div>');
+            });
+        }
+    });
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
