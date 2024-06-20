@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Quản lý Ca Chiếu</h1>
+<h4>Ca Chiếu</h4>
 
 <p>
     <a class="btn btn-primary" asp-action="Create">Thêm Ca Chiếu</a>
@@ -14,10 +14,10 @@
     <thead>
         <tr>
             <th>
-                Phòng
+                Số phòng
             </th>
             <th>
-                Phim
+                Tên phim
             </th>
             <th>
                 Ngày chiếu
@@ -46,8 +46,8 @@
                 </td>
                 <td>
                     <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.IdCaChieu">Sửa</a>
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdCaChieu">Chi Tiết</a>
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdCaChieu">Xóa</a>
+                  @*   <a class="btn btn-info" asp-action="Details" asp-route-id="@item.IdCaChieu">Chi Tiết</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.IdCaChieu">Xóa</a> *@
                 </td>
             </tr>
         }

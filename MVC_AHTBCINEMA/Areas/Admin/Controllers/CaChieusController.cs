@@ -51,7 +51,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim");
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong");
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
 
@@ -87,7 +87,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
 
@@ -124,7 +124,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
 

@@ -1,4 +1,6 @@
-﻿<style>
+﻿@using AHTBCinema_NHOM4_SD18301.Models
+@model List<Phim>
+<style>
     img {
         width: 500px;
         height: 300px;
@@ -9,53 +11,31 @@
     }
 
         .card:hover {
-            transform: scale(1.1); /* Danh sách hiệu ứng hover tùy thuộc vào yêu cầu cụ thể*/
+            transform: scale(1.1);
         }
 
 </style>
 <div class="container text-center row">
-    
+
     <h1 class="d-flex justify-content-center">PHIM ĐANG CHIẾU</h1>
     <br />
     <div class="row row-cols-1 row-cols-md-2">
-        <div class="col-3 mb-4">
-            <div class="card">
-                <a asp-controller="Home" asp-action="Gioithieuphimchitiet"><img class="card-img-top" src="/Image/phim/joker.jpg" alt="Card image cap"></a>
-                <div class="card-body">
-                    <h5 class="card-title">Joker 2019</h5>
-                    <p class="card-text">Joaquin Phoenix, Robert De Niro,...</p>
+        @foreach (var phim in Model)
+        {
+            <div class="col-3 mb-4">
+                <div class="card">
+                    <a>
+                        <img class="card-img-top" src="/uploads/@phim.HinhAnh" alt="Card image cap">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">@phim.TenPhim</h5>
+                        <p class="card-text">@phim.DienVien</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-3 mb-4">
-            <div class="card">
-                <img class="card-img-top" src="/Image/phim/fallenangel.jpg" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Fallen Angel 1995</h5>
-                    <p class="card-text">Lê Minh, Lý Gia Hân, Kim Thành Vũ...</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-3 mb-4">
-            <div class="card">
-                <img class="card-img-top" src="/Image/phim/inception.jpg" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Inception</h5>
-                    <p class="card-text">Leonardo Dicaprio, Tom Hardy,...</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-3 mb-4">
-            <div class="card">
-                <img class="card-img-top" src="/Image/phim/bladerunner2049.jpg" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Blade Runner 2049</h5>
-                    <p class="card-text">Ryan Gosling, Ana de Armas,...</p>
-                </div>
-            </div>
-        </div>
+        }
     </div>
-    <div class="row row-cols-1 row-cols-md-2">
+ @*    <div class="row row-cols-1 row-cols-md-2">
         <div class="col-3 mb-4">
             <div class="card">
                 <a asp-controller="Home" asp-action="Gioithieuphimchitiet"><img class="card-img-top" src="/Image/phim/godfather.jpg" alt="Card image cap"></a>
@@ -92,8 +72,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <nav class="d-flex justify-content-center" aria-label="Page navigation example">
+    </div> *@
+@*     <nav class="d-flex justify-content-center" aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item"><a class="page-link" href="#">Previous</a></li>
             <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -101,5 +81,6 @@
             <li class="page-item"><a class="page-link" href="#">3</a></li>
             <li class="page-item"><a class="page-link" href="#">Next</a></li>
         </ul>
-    </nav>
+    </nav> *@
 </div>
+
