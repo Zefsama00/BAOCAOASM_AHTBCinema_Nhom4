@@ -48,7 +48,7 @@ namespace MVC_AHTBCINEMA.Controllers
         public IActionResult PhimDangChieu()
         {
             var phimDangChieu = _context.CaChieus
-                .Where(x => x.TrangThai == "Đang chiếu")
+                .Where(x => x.TrangThai == "Chưa chiếu")
                 .Include(x => x.Phims)
                 .Select(x => x.Phims) 
                 .ToList();
