@@ -77,7 +77,24 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                         seatNumber = lastSeatNumber + 1;
                     }
                 }
+                // Fetch the display names for Phong and LoaiGhe
+                var phong = await _context.Phongs
+                    .Where(p => p.IdPhong == model.Phong)
+                    .Select(p => p.SoPhong)
+                    .FirstOrDefaultAsync();
 
+                var loaiGhe = await _context.LoaiGhes
+                    .Where(lg => lg.IdLoaiGhe == model.LoaiGhe)
+                    .Select(lg => lg.TenLoaiGhe)
+                    .FirstOrDefaultAsync();
+
+                if (phong == null || loaiGhe == null)
+                {
+                    ModelState.AddModelError("", "Invalid Phong or LoaiGhe.");
+                    ViewData["LoaiGhe"] = new SelectList(_context.LoaiGhes, "IdLoaiGhe", "TenLoaiGhe", model.LoaiGhe);
+                    ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", model.Phong);
+                    return View(model);
+                }
                 for (int i = 1; i <= model.SoLuongGhe; i++)
                 {
                     string idGhe = "GE" + seatNumber;
@@ -94,7 +111,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 
                     _context.Add(ghe);
 
-                    string tenVe = "Ve " + model.Phong + " " + model.LoaiGhe;
+                    string tenVe = "Vé " + phong + " "+ loaiGhe;
                     float giaVe = model.GiaVe;
 
                     if (model.GioChieuId.HasValue)
