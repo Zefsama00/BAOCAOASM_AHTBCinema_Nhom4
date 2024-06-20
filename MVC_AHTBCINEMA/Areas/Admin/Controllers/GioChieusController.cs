@@ -89,31 +89,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 }
 
                 // Check if there is any GioChieu in the CaChieu that is currently screening
-                bool isAnyGioChieuInCaChieuScreening = await _context.GioChieus
-                    .AnyAsync(gc => gc.Cachieu == gioChieu.Cachieu && gc.TrangThai == "Đang chiếu");
-
-                // Update CaChieu TrangThai based on GioChieu TrangThai
-                if (isAnyGioChieuInCaChieuScreening)
-                {
-                    caChieu.TrangThai = "Đang chiếu";
-                    _context.Update(caChieu);
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    // Check if there are only "Chưa chiếu" and "Hết hạn" GioChieu in the CaChieu
-                    bool hasOnlyNotStartedOrExpiredGioChieu = await _context.GioChieus
-                        .AllAsync(gc => gc.Cachieu == gioChieu.Cachieu &&
-                                        (gc.TrangThai == "Chưa chiếu" || gc.TrangThai == "Hết hạn"));
-
-                    // Update CaChieu TrangThai based on GioChieu TrangThai
-                    if (hasOnlyNotStartedOrExpiredGioChieu)
-                    {
-                        caChieu.TrangThai = "Chưa chiếu";
-                        _context.Update(caChieu);
-                        await _context.SaveChangesAsync();
-                    }
-                }
+                
 
                 // Get the screening start and end times
                 DateTime screeningStartDateTime = caChieu.NgayChieu.Date + gioChieu.GioBatDau;
@@ -137,7 +113,31 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 // Save GioChieu
                 _context.Add(gioChieu);
                 await _context.SaveChangesAsync();
+                _context.Update(caChieu);
+                bool isAnyGioChieuInCaChieuScreening = await _context.GioChieus
+                    .AnyAsync(gc => gc.Cachieu == gioChieu.Cachieu && gc.TrangThai == "Đang chiếu");
 
+                // Update CaChieu TrangThai based on GioChieu TrangThai
+                if (isAnyGioChieuInCaChieuScreening)
+                {
+                    caChieu.TrangThai = "Đang chiếu";
+
+                }
+                else
+                {
+                    // Check if there are only "Chưa chiếu" and "Hết hạn" GioChieu in the CaChieu
+                    bool hasOnlyNotStartedOrExpiredGioChieu = await _context.GioChieus
+                        .AllAsync(gc => gc.Cachieu == gioChieu.Cachieu &&
+                                        (gc.TrangThai == "Chưa chiếu" || gc.TrangThai == "Hết hạn"));
+
+                    // Update CaChieu TrangThai based on GioChieu TrangThai
+                    if (hasOnlyNotStartedOrExpiredGioChieu)
+                    {
+                        caChieu.TrangThai = "Chưa chiếu";
+
+                    }
+                }
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
