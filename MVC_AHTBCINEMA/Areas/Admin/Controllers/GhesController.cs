@@ -36,7 +36,7 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var gioChieus = await _context.GioChieus
-                .Where(gc => gc.CaChieus.Phong == phongId)
+                .Where(gc => gc.CaChieus.Phong == phongId && gc.CaChieus.TrangThai != "Hết hạn")
                 .Select(gc => new SelectListItem
                 {
                     Value = gc.IdGioChieu.ToString(),
