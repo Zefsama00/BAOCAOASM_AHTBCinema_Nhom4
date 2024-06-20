@@ -181,6 +181,18 @@ namespace MVC_AHTBCINEMA.Controllers
 
             return View("ThanhToan", viewModel); // Trả về view "ThanhToan" với viewModel đã tạo
         }
+        public IActionResult UuDai()
+        {
+            //var phimlist = _context.Phims.ToList();
+            //var cachieulist = _context.CaChieus.ToList();
+            //var ghelist = _context.Ghes.ToList();
+            var combo = _context.DoAnvaNuocs.ToList();
+            var viewModel = new Multimodel
+            {
+                DoAnVaNuoc = combo
+            };
+            return View(viewModel);
+        }
 
     }
 }
