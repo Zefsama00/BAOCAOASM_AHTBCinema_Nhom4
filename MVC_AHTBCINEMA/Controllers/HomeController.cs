@@ -1,21 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AHTBCinema_NHOM4_SD18301.Models;
+using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MVC_AHTBCINEMA.Models;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MVC_AHTBCINEMA.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DBCinemaContext _context;
+        public HomeController(ILogger<HomeController> logger, DBCinemaContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -27,31 +29,44 @@ namespace MVC_AHTBCINEMA.Controllers
         {
             return View();
         }
+
         public IActionResult GioiThieu()
         {
             return View();
         }
+
         public IActionResult Login()
         {
             return View();
         }
+
         public IActionResult Pay()
         {
             return View();
         }
+
         public IActionResult PhimDangChieu()
         {
-            return View();
+            var phimDangChieu = _context.CaChieus
+                .Where(x => x.TrangThai == "Đang chiếu")
+                .Include(x => x.Phims)
+                .Select(x => x.Phims) 
+                .ToList();
+
+            return View(phimDangChieu);
         }
+
+
+
         public IActionResult Resgister()
         {
             return View();
         }
+
         public IActionResult Uudai()
         {
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -73,7 +73,7 @@ a:hover{
     margin: 0 auto;
 }
 .header-main h1 {
-    font-size: 64px;
+   /* font-size: 64px;*/
     color: #FFFFFF;
     text-align: center;
     padding-bottom: 0.8em;

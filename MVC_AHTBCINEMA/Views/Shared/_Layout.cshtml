@@ -82,13 +82,14 @@
                                     <div class="col-9 text-white">
                                         @if (isLoginIN)
                                         {
-                                            <text>Hello @user </text>
+                                            <text><span class="d-inline">Hello @user</span></text>
+
                                             <text><a class="text-light text-decoration-none" asp-controller="DangNhap" asp-action="Logout">Đăng xuất</a></text>
                                         }
                                         else
                                         {
 
-                                            <text>Hello<br /><a class="text-light text-decoration-none" asp-controller="DangNhap" asp-action="Login">Đăng nhập</a></text>
+                                            <text><br /><a class="text-light text-decoration-none" asp-controller="DangNhap" asp-action="Login">Đăng nhập</a></text>
                                         }
                                     </div>
                                 </div>
