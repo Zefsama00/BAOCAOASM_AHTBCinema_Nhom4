@@ -4,14 +4,16 @@ using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API_AHTBCINEMA.Migrations
 {
     [DbContext(typeof(DBCinemaContext))]
-    partial class DBCinemaContextModelSnapshot : ModelSnapshot
+    [Migration("20240620115554_dbmoinhat")]
+    partial class dbmoinhat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

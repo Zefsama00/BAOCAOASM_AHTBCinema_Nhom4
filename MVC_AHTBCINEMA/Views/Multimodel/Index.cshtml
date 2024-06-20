@@ -21,7 +21,10 @@
             color: red;
         }
         img{
-            height: 250px;
+            height: 300px;
+        }
+        .md-6{
+            margin-bottom: 16rem;
         }
     </style>
 </head>
@@ -35,13 +38,9 @@
     <div class="container-fluid marquee">
        <br />
     </div>
-    <div class="mb-5">
+    <div class="md-6" >
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 850px; margin: auto; height: 250px;">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
+         
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="/Image/poster3.jpg" class="d-block w-100" alt="...">
@@ -53,11 +52,11 @@
                     <img src="/Image/poster5.jpg" class="d-block w-100" alt="...">
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev" style="margin-top:200px">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next" style="margin-top:200px">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
@@ -75,7 +74,7 @@
 
                             <div class="col-3 text-center">
                                 <div class="d-flex flex-column h-100 justify-content-between">
-                                    <img src="/uploads/@phim.HinhAnh" alt="Product 1" class="product">
+                                    <img src="/uploads/@phim.HinhAnh" alt="Product 1" class="product" >
                                     <div class="text-center">
                                     </div>
                                     <a asp-action="Details" asp-route-id="@phim.IdPhim" class="btn btn-danger">Xem ngay!</a>
@@ -109,7 +108,7 @@
                         </div>
                         <div class="col-3 text-center">
                             <div class="d-flex flex-column justify-content-between h-100">
-                                <img src="/Image/phim/joker.jpg" alt="Product 2" class="product-item">
+                                <img src="/Image/phim/joker.jpg" alt="Product 2" class="product-item" style="height:300px">
                                 <div class="text-center">
                                 </div>
                                 <a href="/Home/DetailsFilm" class="btn btn-danger">Xem ngay!</a>
@@ -117,15 +116,15 @@
                         </div>
                         <div class="col-3 text-center">
                             <div class="d-flex flex-column justify-content-between h-100">
-                                <img src="/Image/phim/nowyouseeme.jpg" alt="Product 3" class="product-item">
+                    <img src="/Image/phim/nowyouseeme.jpg" alt="Product 3" class="product-item" style="height:300px">
                                 <div class="text-center">
                                 </div>
-                                <a href="/Home/DetailsFilm" class="btn btn-danger">Mua ngay!</a>
+                                <a href="/Home/DetailsFilm" class="btn btn-danger">Xem ngay!</a>
                             </div>
                         </div>
                         <div class="col-3 text-center">
                             <div class="d-flex flex-column justify-content-between h-100">
-                                <img src="/Image/phim/parasite.jpg" alt="Product 4" class="product-item">
+                    <img src="/Image/phim/parasite.jpg" alt="Product 4" class="product-item" style="height:300px">
                                 <div class="text-center">
                                 </div>
                                 <a href="/Home/DetailsFilm" class="btn btn-danger">Xem ngay!</a>

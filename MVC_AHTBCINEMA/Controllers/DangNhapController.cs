@@ -11,6 +11,9 @@ using System;
 using MVC_ASM_AHTBCinema_NHOM4_SD18301.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
+
 
 
 namespace MVC_AHTBCINEMA.Controllers
@@ -22,6 +25,21 @@ namespace MVC_AHTBCINEMA.Controllers
         public DangNhapController(DBCinemaContext context)
         {
             _context = context;
+        }
+        private string GetMd5Hash(string input)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
         }
 
         public IActionResult Index()
@@ -45,7 +63,13 @@ namespace MVC_AHTBCINEMA.Controllers
         [HttpPost]
         public IActionResult Login(User user)
         {
-            var u = _context.Users.FirstOrDefault(x => x.Username == user.Username && x.PassWord == user.PassWord);
+            string hashedPassword = "";
+            if (user.PassWord != null)
+            {
+                 hashedPassword = GetMd5Hash(user.PassWord);
+            }
+         
+            var u = _context.Users.FirstOrDefault(x => x.Username == user.Username && x.PassWord == hashedPassword);
 
             if (u != null)
             {
@@ -61,11 +85,11 @@ namespace MVC_AHTBCINEMA.Controllers
             {
                 TempData["ErroLoginMessage"] = "Tài khoản hoặc mật khẩu không chính xác.";
                 ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác.");
-
             }
-         
+
             return View();
         }
+
 
 
         public ActionResult Logout()
@@ -93,13 +117,14 @@ namespace MVC_AHTBCINEMA.Controllers
                     khachHang.IdKH = "KH" + demkh.ToString();
                     khachHang.TrangThai = "Hoạt động";
 
-                    // Lưu khách hàng vào database
+                    // Mã hóa mật khẩu trước khi lưu vào database
+                    khachHang.Password = GetMd5Hash(khachHang.Password);
+
                     _context.KhachHangs.Add(khachHang);
                     int add = await _context.SaveChangesAsync();
 
                     string catchuoi = khachHang.Email.Substring(0, khachHang.Email.IndexOf("@"));
 
-                    // Sau khi lưu thành công khách hàng, tạo người dùng
                     if (add > 0)
                     {
                         user.IdUser = khachHang.IdKH;
@@ -114,13 +139,12 @@ namespace MVC_AHTBCINEMA.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý ngoại lệ nếu cần thiết
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại sau.");
-                    return View(khachHang); // Quay lại view để hiển thị thông tin và lỗi
+                    return View(khachHang);
                 }
             }
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Multimodel");
+            return View();
         }
 
         [HttpGet]
@@ -133,10 +157,10 @@ namespace MVC_AHTBCINEMA.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmNewPassword, string usernameweb)
         {
-           try
+            try
             {
                 // Lấy thông tin người dùng từ session hoặc principal
-                string username = usernameweb; // Sử dụng tên người dùng từ principal
+                string username = usernameweb;
 
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
                 if (user == null)
@@ -146,7 +170,7 @@ namespace MVC_AHTBCINEMA.Controllers
                 }
 
                 // Kiểm tra mật khẩu hiện tại
-                if (user.PassWord != currentPassword)
+                if (user.PassWord != GetMd5Hash(currentPassword))
                 {
                     ModelState.AddModelError("", "Mật khẩu hiện tại không đúng.");
                     return View();
@@ -160,7 +184,7 @@ namespace MVC_AHTBCINEMA.Controllers
                 }
 
                 // Cập nhật mật khẩu cho User
-                user.PassWord = newPassword;
+                user.PassWord = GetMd5Hash(newPassword);
                 _context.Users.Update(user);
 
                 await _context.SaveChangesAsync();
@@ -170,7 +194,6 @@ namespace MVC_AHTBCINEMA.Controllers
             }
             catch (Exception ex)
             {
-                // Xử lý ngoại lệ nếu có
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi thay đổi mật khẩu. Vui lòng thử lại sau.");
                 return View();
             }

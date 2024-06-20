@@ -6,7 +6,9 @@ namespace API_AHTBCINEMA.Models
     {
         [Key]
         public string IdUser { get; set; }
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string PassWord { get; set; }
         public string Role { get; set; }
     }

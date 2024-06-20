@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using AHTBCinema_NHOM4_SD18301.Models;
 using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
 using API_AHTBCINEMA.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 {
@@ -15,6 +17,21 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
     public class NhanViensController : Controller
     {
         private readonly DBCinemaContext _context;
+        private string GetMd5Hash(string input)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
 
         public NhanViensController(DBCinemaContext context)
         {
@@ -65,18 +82,17 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                     var demnv = _context.NhanViens.Count() + 1;
                     nhanVien.IdNV = "NV" + demnv.ToString();
                     nhanVien.TrangThai = "Hoạt động";
-                    // Lưu nhân viên vào database
+                    nhanVien.Password = GetMd5Hash(nhanVien.Password); // Mã hóa mật khẩu
                     _context.NhanViens.Add(nhanVien);
                     int add = await _context.SaveChangesAsync();
                     string usernameFromEmail = nhanVien.Email.Substring(0, nhanVien.Email.IndexOf("@"));
 
-                    // Sau khi lưu thành công nhân viên, tạo người dùng
                     if (add > 0)
                     {
                         user.IdUser = nhanVien.IdNV;
                         user.Username = usernameFromEmail;
                         user.PassWord = nhanVien.Password;
-                        user.Role = "nhanvien"; // Assuming the role is "nhanvien"
+                        user.Role = "nhanvien";
                         _context.Users.Add(user);
                         await _context.SaveChangesAsync();
                     }
@@ -85,13 +101,13 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý ngoại lệ nếu cần thiết
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại sau.");
-                    return View(nhanVien); // Quay lại view để hiển thị thông tin và lỗi
+                    return View(nhanVien);
                 }
             }
             return View(nhanVien);
         }
+
         // GET: Admin/NhanViens/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -124,49 +140,43 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 try
                 {
-                    // Find the existing employee
                     var existingNhanVien = await _context.NhanViens.FindAsync(id);
                     if (existingNhanVien == null)
                     {
                         return NotFound();
                     }
 
-                    // Update the employee's details
                     existingNhanVien.TenNV = nhanVien.TenNV;
                     existingNhanVien.SDT = nhanVien.SDT;
                     existingNhanVien.NamSinh = nhanVien.NamSinh;
                     existingNhanVien.Email = nhanVien.Email;
-                    existingNhanVien.Password = nhanVien.Password;
+                    existingNhanVien.Password = GetMd5Hash(nhanVien.Password); // Mã hóa mật khẩu
                     existingNhanVien.ChucVu = nhanVien.ChucVu;
                     existingNhanVien.TrangThai = nhanVien.TrangThai;
 
                     _context.Update(existingNhanVien);
 
-                    // Find the existing user
                     var existingUser = await _context.Users.FindAsync(existingNhanVien.IdNV);
                     if (existingUser == null)
                     {
                         return NotFound();
                     }
 
-                    // Update the user's details
                     string usernameFromEmail = nhanVien.Email.Substring(0, nhanVien.Email.IndexOf("@"));
                     existingUser.Username = usernameFromEmail;
-                    existingUser.PassWord = nhanVien.Password;
-                    existingUser.Role = user.Role; // Assuming you might want to update the role as well
+                    existingUser.PassWord = existingNhanVien.Password;
+                    existingUser.Role = user.Role;
 
                     _context.Update(existingUser);
 
-                    // Save changes to the database
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions if necessary
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại sau.");
-                    return View(nhanVien); // Return to the view to display the information and errors
+                    return View(nhanVien);
                 }
             }
             return View(nhanVien);
