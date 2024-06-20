@@ -24,14 +24,43 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/GioChieus
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.GioChieus
+            var gioChieus = await _context.GioChieus
                 .Include(g => g.CaChieus)
                     .ThenInclude(c => c.Phongs) // Include Phong related to CaChieus
                 .Include(g => g.CaChieus)
-                    .ThenInclude(c => c.Phims); // Include Phim related to CaChieus
+                    .ThenInclude(c => c.Phims) // Include Phim related to CaChieus
+                .ToListAsync();
 
-            return View(await dBCinemaContext.ToListAsync());
+            DateTime currentDateTime = DateTime.Now;
+
+            foreach (var gioChieu in gioChieus)
+            {
+                // Calculate screening times
+                DateTime screeningStartDateTime = gioChieu.CaChieus.NgayChieu.Date + gioChieu.GioBatDau;
+                DateTime screeningEndDateTime = gioChieu.CaChieus.NgayChieu.Date + gioChieu.GioKetThuc;
+
+                // Determine TrangThai based on current time and screening times
+                if (currentDateTime >= screeningStartDateTime && currentDateTime <= screeningEndDateTime)
+                {
+                    gioChieu.TrangThai = "Đang chiếu";
+                }
+                else if (currentDateTime > screeningEndDateTime)
+                {
+                    gioChieu.TrangThai = "Hết hạn";
+                }
+                else
+                {
+                    gioChieu.TrangThai = "Chưa chiếu";
+                }
+            }
+
+            // Save changes to database
+            _context.UpdateRange(gioChieus);
+            await _context.SaveChangesAsync();
+
+            return View(gioChieus);
         }
+
 
         // GET: Admin/GioChieus/Details/5
         public async Task<IActionResult> Details(int? id)

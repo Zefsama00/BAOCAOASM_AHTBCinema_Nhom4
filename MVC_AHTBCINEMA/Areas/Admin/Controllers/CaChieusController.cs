@@ -23,8 +23,29 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/CaChieus
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.CaChieus.Include(c => c.Phims).Include(c => c.Phongs);
-            return View(await dBCinemaContext.ToListAsync());
+            var dBCinemaContext = _context.CaChieus.Include(c => c.Phims).Include(c => c.Phongs).ToList();
+
+            // Update the status of each CaChieu based on the current date
+            foreach (var caChieu in dBCinemaContext)
+            {
+                DateTime currentDate = DateTime.Now.Date;
+                if (caChieu.NgayChieu.Date < currentDate)
+                {
+                    caChieu.TrangThai = "Đã chiếu";
+                }
+                else if (caChieu.NgayChieu.Date == currentDate)
+                {
+                    caChieu.TrangThai = "Đang chiếu";
+                }
+                else
+                {
+                    caChieu.TrangThai = "Chưa chiếu";
+                }
+                _context.Update(caChieu);
+            }
+            await _context.SaveChangesAsync();
+
+            return View(dBCinemaContext);
         }
 
         // GET: Admin/CaChieus/Details/5
