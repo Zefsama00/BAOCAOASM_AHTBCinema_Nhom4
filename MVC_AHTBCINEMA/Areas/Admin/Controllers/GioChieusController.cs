@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using API_AHTBCINEMA.Models;
 using ASM_AHTBCINEMA_NHOM4_SD18301.Data;
 
+
 namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -23,7 +24,12 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/GioChieus
         public async Task<IActionResult> Index()
         {
-            var dBCinemaContext = _context.GioChieus.Include(g => g.CaChieus);
+            var dBCinemaContext = _context.GioChieus
+                .Include(g => g.CaChieus)
+                    .ThenInclude(c => c.Phongs) // Include Phong related to CaChieus
+                .Include(g => g.CaChieus)
+                    .ThenInclude(c => c.Phims); // Include Phim related to CaChieus
+
             return View(await dBCinemaContext.ToListAsync());
         }
 
@@ -36,8 +42,12 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             }
 
             var gioChieu = await _context.GioChieus
-                .Include(g => g.CaChieus)
-                .FirstOrDefaultAsync(m => m.IdGioChieu == id);
+              .Include(g => g.CaChieus)
+              .ThenInclude(c => c.Phongs)
+              .Include(g => g.CaChieus)
+              .ThenInclude(c => c.Phims)
+              .FirstOrDefaultAsync(m => m.IdGioChieu == id);
+
             if (gioChieu == null)
             {
                 return NotFound();
@@ -49,26 +59,103 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/GioChieus/Create
         public IActionResult Create()
         {
-            ViewData["Cachieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu");
+            var caChieus = _context.CaChieus
+            .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
+            .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
+            .Where(c => c.TrangThai != "Hết hạn")
+            .ToList()
+            .Select(c => new {
+                IdCaChieu = c.IdCaChieu,
+                NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
+            })
+            .ToList();
+
+            ViewData["Cachieu"] = new SelectList(caChieus, "IdCaChieu", "NgayChieu");
             return View();
         }
 
-        // POST: Admin/GioChieus/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdGioChieu,GioBatDau,GioKetThuc,Cachieu,TrangThai")] GioChieu gioChieu)
         {
             if (ModelState.IsValid)
             {
+                var caChieu = await _context.CaChieus.FindAsync(gioChieu.Cachieu);
+                if (caChieu == null)
+                {
+                    ModelState.AddModelError("", "Không tìm thấy CaChieu tương ứng.");
+                    ViewData["Cachieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "NgayChieu", gioChieu.Cachieu);
+                    return View(gioChieu);
+                }
+
+                // Check if there is any GioChieu in the CaChieu that is currently screening
+                bool isAnyGioChieuInCaChieuScreening = await _context.GioChieus
+                    .AnyAsync(gc => gc.Cachieu == gioChieu.Cachieu && gc.TrangThai == "Đang chiếu");
+
+                // Update CaChieu TrangThai based on GioChieu TrangThai
+                if (isAnyGioChieuInCaChieuScreening)
+                {
+                    caChieu.TrangThai = "Đang chiếu";
+                    _context.Update(caChieu);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    // Check if there are only "Chưa chiếu" and "Hết hạn" GioChieu in the CaChieu
+                    bool hasOnlyNotStartedOrExpiredGioChieu = await _context.GioChieus
+                        .AllAsync(gc => gc.Cachieu == gioChieu.Cachieu &&
+                                        (gc.TrangThai == "Chưa chiếu" || gc.TrangThai == "Hết hạn"));
+
+                    // Update CaChieu TrangThai based on GioChieu TrangThai
+                    if (hasOnlyNotStartedOrExpiredGioChieu)
+                    {
+                        caChieu.TrangThai = "Chưa chiếu";
+                        _context.Update(caChieu);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // Get the screening start and end times
+                DateTime screeningStartDateTime = caChieu.NgayChieu.Date + gioChieu.GioBatDau;
+                DateTime screeningEndDateTime = caChieu.NgayChieu.Date + gioChieu.GioKetThuc;
+                DateTime currentDateTime = DateTime.Now;
+
+                // Determine GioChieu TrangThai based on current time and screening times
+                if (currentDateTime >= screeningStartDateTime && currentDateTime <= screeningEndDateTime)
+                {
+                    gioChieu.TrangThai = "Đang chiếu";
+                }
+                else if (currentDateTime < screeningStartDateTime)
+                {
+                    gioChieu.TrangThai = "Chưa chiếu";
+                }
+                else
+                {
+                    gioChieu.TrangThai = "Hết hạn";
+                }
+
+                // Save GioChieu
                 _context.Add(gioChieu);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Cachieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", gioChieu.Cachieu);
+
+            var caChieus = _context.CaChieus
+            .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
+            .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
+            .Where(c => c.TrangThai != "Hết hạn")
+            .ToList()
+            .Select(c => new {
+                IdCaChieu = c.IdCaChieu,
+                NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
+            })
+            .ToList();
+
+            ViewData["Cachieu"] = new SelectList(caChieus, "IdCaChieu", "NgayChieu");
             return View(gioChieu);
         }
+
 
         // GET: Admin/GioChieus/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -83,13 +170,21 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["Cachieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", gioChieu.Cachieu);
+            var caChieus = _context.CaChieus
+             .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
+             .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
+             .Where(c => c.TrangThai != "Hết hạn")
+             .ToList()
+             .Select(c => new {
+                 IdCaChieu = c.IdCaChieu,
+                 NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
+             })
+             .ToList();
+
+            ViewData["Cachieu"] = new SelectList(caChieus, "IdCaChieu", "NgayChieu");
             return View(gioChieu);
         }
 
-        // POST: Admin/GioChieus/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdGioChieu,GioBatDau,GioKetThuc,Cachieu,TrangThai")] GioChieu gioChieu)
@@ -103,8 +198,75 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(gioChieu);
+                    // Retrieve current GioChieu and associated CaChieu from database
+                    var currentGioChieu = await _context.GioChieus
+                        .Include(gc => gc.CaChieus)
+                        .FirstOrDefaultAsync(gc => gc.IdGioChieu == gioChieu.IdGioChieu);
+
+                    if (currentGioChieu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update properties of current GioChieu with new values
+                    currentGioChieu.GioBatDau = gioChieu.GioBatDau;
+                    currentGioChieu.GioKetThuc = gioChieu.GioKetThuc;
+
+                    // Calculate screening times
+                    DateTime screeningStartDateTime = currentGioChieu.CaChieus.NgayChieu.Date + gioChieu.GioBatDau;
+                    DateTime screeningEndDateTime = currentGioChieu.CaChieus.NgayChieu.Date + gioChieu.GioKetThuc;
+                    DateTime currentDateTime = DateTime.Now;
+
+                    // Determine TrangThai based on current time and screening times
+                    if (currentDateTime >= screeningStartDateTime && currentDateTime <= screeningEndDateTime)
+                    {
+                        gioChieu.TrangThai = "Đang chiếu";
+                    }
+                    else if (currentDateTime > screeningEndDateTime)
+                    {
+                        gioChieu.TrangThai = "Hết hạn";
+                    }
+                    else
+                    {
+                        gioChieu.TrangThai = "Chưa chiếu";
+                    }
+
+                    // Update TrangThai for CaChieu based on GioChieu
+                    var caChieu = currentGioChieu.CaChieus;
+
+                    // Check if there is any GioChieu in the CaChieu that is currently screening
+                    bool isAnyGioChieuInCaChieuScreening = await _context.GioChieus
+                        .AnyAsync(gc => gc.Cachieu == gioChieu.Cachieu && gc.TrangThai == "Đang chiếu");
+
+                    // Update CaChieu TrangThai based on GioChieu TrangThai
+                    if (isAnyGioChieuInCaChieuScreening)
+                    {
+                        caChieu.TrangThai = "Đang chiếu";
+                    }
+                    else
+                    {
+                        // Check if there are only "Chưa chiếu" and "Hết hạn" GioChieu in the CaChieu
+                        bool hasOnlyNotStartedOrExpiredGioChieu = await _context.GioChieus
+                            .AllAsync(gc => gc.Cachieu == gioChieu.Cachieu &&
+                                            (gc.TrangThai == "Chưa chiếu" || gc.TrangThai == "Hết hạn"));
+
+                        // Update CaChieu TrangThai based on GioChieu TrangThai
+                        if (hasOnlyNotStartedOrExpiredGioChieu)
+                        {
+                            caChieu.TrangThai = "Chưa chiếu";
+                        }
+                        else
+                        {
+                            caChieu.TrangThai = gioChieu.TrangThai;
+                        }
+                    }
+
+                    // Save changes to database
+                    _context.Update(caChieu);
+                    _context.Update(currentGioChieu);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,41 +279,24 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["Cachieu"] = new SelectList(_context.CaChieus, "IdCaChieu", "IdCaChieu", gioChieu.Cachieu);
+
+            // If ModelState is not valid, reload Cachieu dropdown
+            var caChieus = _context.CaChieus
+             .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
+             .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
+             .Where(c => c.TrangThai != "Hết hạn")
+             .ToList()
+             .Select(c => new {
+                 IdCaChieu = c.IdCaChieu,
+                 NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
+             })
+             .ToList();
+
+            ViewData["Cachieu"] = new SelectList(caChieus, "IdCaChieu", "NgayChieu");
             return View(gioChieu);
         }
 
-        // GET: Admin/GioChieus/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var gioChieu = await _context.GioChieus
-                .Include(g => g.CaChieus)
-                .FirstOrDefaultAsync(m => m.IdGioChieu == id);
-            if (gioChieu == null)
-            {
-                return NotFound();
-            }
-
-            return View(gioChieu);
-        }
-
-        // POST: Admin/GioChieus/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var gioChieu = await _context.GioChieus.FindAsync(id);
-            _context.GioChieus.Remove(gioChieu);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool GioChieuExists(int id)
         {

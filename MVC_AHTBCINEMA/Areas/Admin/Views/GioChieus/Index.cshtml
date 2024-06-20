@@ -1,54 +1,44 @@
 ﻿@model IEnumerable<API_AHTBCINEMA.Models.GioChieu>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý giờ chiếu";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <h1 class="mt-4">@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Giờ kết thúc
-            </th>
-            <th>
-                Giờ kết thúc
-            </th>
-            <th>
-                Ca Chiếu
-            </th>
-            <th>
-                Trạng thái
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GioBatDau)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GioKetThuc)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CaChieus.IdCaChieu)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TrangThai)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdGioChieu">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdGioChieu">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdGioChieu">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Thêm giờ chiếu</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Giờ bắt đầu</th>
+                    <th scope="col">Giờ kết thúc</th>
+                    <th scope="col">Ca Chiếu</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.GioBatDau)</td>
+                        <td>@Html.DisplayFor(modelItem => item.GioKetThuc)</td>
+                        <td>
+                            @item.CaChieus.NgayChieu.ToString("dd/MM/yyyy") - @item.CaChieus.Phongs.SoPhong - @item.CaChieus.Phims.TenPhim
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.IdGioChieu" class="btn btn-info">Thông tin giờ chiếu</a>
+                            <a asp-action="Edit" asp-route-id="@item.IdGioChieu" class="btn btn-primary">Sửa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
