@@ -50,8 +50,8 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // GET: Admin/CaChieus/Create
         public IActionResult Create()
         {
-            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim");
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong");
+            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "TenPhim");
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong");
             return View();
         }
 
@@ -60,16 +60,25 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCaChieu,Phong,Phim,NgayChieu,TrangThai")] CaChieu caChieu)
+        public async Task<IActionResult> Create([Bind("IdCaChieu,Phong,Phim,NgayChieu")] CaChieu caChieu)
         {
             if (ModelState.IsValid)
             {
+                // Compare NgayChieu with the current date
+                if (caChieu.NgayChieu.Date >= DateTime.Now.Date)
+                {
+                    caChieu.TrangThai = "Chưa chiếu";
+                }
+                else
+                {
+                    caChieu.TrangThai = "Hết hạn";
+                }
                 _context.Add(caChieu);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "TenPhim", caChieu.Phim);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
 
@@ -86,17 +95,13 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "TenPhim", caChieu.Phim);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
-
-        // POST: Admin/CaChieus/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCaChieu,Phong,Phim,NgayChieu,TrangThai")] CaChieu caChieu)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCaChieu,Phong,Phim,TrangThai")] CaChieu caChieu)
         {
             if (id != caChieu.IdCaChieu)
             {
@@ -107,7 +112,20 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(caChieu);
+                    // Retrieve the current CaChieu from the database
+                    var currentCaChieu = await _context.CaChieus.FindAsync(id);
+
+                    if (currentCaChieu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update only the editable fields
+                    currentCaChieu.Phong = caChieu.Phong;
+                    currentCaChieu.Phim = caChieu.Phim;
+
+                    // Save changes to the database
+                    _context.Update(currentCaChieu);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -123,41 +141,13 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "IdPhim", caChieu.Phim);
-            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "IdPhong", caChieu.Phong);
+
+            // If ModelState is not valid, reload data and return to the view
+            ViewData["Phim"] = new SelectList(_context.Phims, "IdPhim", "TenPhim", caChieu.Phim);
+            ViewData["Phong"] = new SelectList(_context.Phongs, "IdPhong", "SoPhong", caChieu.Phong);
             return View(caChieu);
         }
 
-        // GET: Admin/CaChieus/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var caChieu = await _context.CaChieus
-                .Include(c => c.Phims)
-                .Include(c => c.Phongs)
-                .FirstOrDefaultAsync(m => m.IdCaChieu == id);
-            if (caChieu == null)
-            {
-                return NotFound();
-            }
-
-            return View(caChieu);
-        }
-
-        // POST: Admin/CaChieus/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var caChieu = await _context.CaChieus.FindAsync(id);
-            _context.CaChieus.Remove(caChieu);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool CaChieuExists(int id)
         {

@@ -1,49 +1,44 @@
 ﻿@model API_AHTBCINEMA.Models.GioChieu
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm giờ chiếu";
 }
 
-<h1>Create</h1>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
-<h4>GioChieu</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="GioBatDau" class="control-label">Giờ bắt đầu (24h)</label>
-                <input asp-for="GioBatDau" class="form-control" type="time" />
-                <span asp-validation-for="GioBatDau" class="text-danger"></span>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Thông tin giờ chiếu mới</h4>
+                <hr />
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="GioBatDau" class="control-label">Giờ bắt đầu (24h)</label>
+                        <input asp-for="GioBatDau" class="form-control" type="time" />
+                        <span asp-validation-for="GioBatDau" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GioKetThuc" class="control-label">Giờ kết thúc (24h)</label>
+                        <input asp-for="GioKetThuc" class="form-control" type="time" />
+                        <span asp-validation-for="GioKetThuc" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Cachieu" class="control-label">Ca chiếu</label>
+                        <select asp-for="Cachieu" class="form-control" asp-items="ViewBag.Cachieu"></select>
+                        <span asp-validation-for="Cachieu" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="GioKetThuc" class="control-label">Giờ kết thúc (24h)</label>
-                <input asp-for="GioKetThuc" class="form-control" type="time" />
-                <span asp-validation-for="GioKetThuc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cachieu" class="control-label">Ca chiếu</label>
-                <select asp-for="Cachieu" class="form-control" asp-items="ViewBag.Cachieu"></select>
-                <span asp-validation-for="Cachieu" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label">Trạng thái</label>
-                <select asp-for="TrangThai" class="form-control">
-                    <option value="Chưa chiếu">Chưa chiếu</option>
-                    <option value="Đang chiếu">Đang chiếu</option>
-                    <option value="Hết hạn">Hết hạn</option>
-                </select>
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

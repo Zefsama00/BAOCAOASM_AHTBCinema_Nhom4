@@ -1,42 +1,36 @@
 ﻿@model API_AHTBCINEMA.Models.GioChieu
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết giờ chiếu";
 }
 
-<h1>Details</h1>
+<h1 class="mb-4">@ViewData["Title"]</h1>
 
-<div>
-    <h4>GioChieu</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GioBatDau)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GioBatDau)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GioKetThuc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GioKetThuc)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CaChieus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CaChieus.IdCaChieu)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TrangThai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TrangThai)
-        </dd>
-    </dl>
+<div class="card border-primary">
+    <div class="card-body">
+        <h4 class="card-title">Thông tin chi tiết</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">Giờ bắt đầu</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.GioBatDau)</dd>
+
+            <dt class="col-sm-3">Giờ kết thúc</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.GioKetThuc)</dd>
+
+            <dt class="col-sm-3">Ca chiếu</dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CaChieus.Phongs.SoPhong) -
+                @Html.DisplayFor(model => model.CaChieus.Phims.TenPhim) -
+                @Model.CaChieus.NgayChieu.ToString("dd/MM/yyyy")
+            </dd>
+
+            <dt class="col-sm-3">Trạng thái</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.TrangThai)</dd>
+        </dl>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.IdGioChieu">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.IdGioChieu" class="btn btn-primary mr-2">Chỉnh sửa</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
 </div>
