@@ -21,13 +21,11 @@
                 <span asp-validation-for="Phong" class="text-danger"></span>
             </div>
 
-                <div class="form-group col-sm-6">
-                    <label asp-for="Phim" class="control-label">Tên phim</label>
-                    <select asp-for="Phim" class="form-control" asp-items="ViewBag.Phim"></select>
-                    <span asp-validation-for="Phim" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Phim" class="control-label">Phim</label>
+                <select asp-for="Phim" class="form-control" asp-items="ViewBag.Phim"></select>
+                <span asp-validation-for="Phim" class="text-danger"></span>
             </div>
-           <div class="row">
 
             <div class="form-group">
                 <label asp-for="NgayChieu" class="control-label">Ngày chiếu</label>

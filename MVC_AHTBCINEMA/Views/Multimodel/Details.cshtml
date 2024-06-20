@@ -78,59 +78,74 @@
                                     <h2>Mua Vé</h2>
                                 </div>
                                     <div class="border border-danger p-3" id="showtimes" style="display: none;">
-                                    @if (Model.CaChieu.Any(cc => cc.Phim == phim.IdPhim))
+                                    @if (isLoginIN)
                                     {
-                                        @foreach (var cachieu in Model.CaChieu.Where(cc => cc.Phim == phim.IdPhim))
+                                        @if (Model.CaChieu.Any(cc => cc.Phim == phim.IdPhim))
                                         {
-                                            <div class="card mb-3">
-                                                <div class="card-header">
-                                                    <p class="card-text">Ngày chiếu: @cachieu.NgayChieu.ToString("dd/MM/yyyy")</p>
+                                            @foreach (var cachieu in Model.CaChieu.Where(cc => cc.Phim == phim.IdPhim))
+                                            {
+                                                <div class="card mb-3">
+                                                    <div class="card-header">
+                                                        <p class="card-text">Ngày chiếu: @cachieu.NgayChieu.ToString("dd/MM/yyyy")</p>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        @if (cachieu.GioChieus != null && cachieu.GioChieus.Any())
+                                                        {
+                                                            <h6 class="card-subtitle mb-2 text-muted">Danh sách giờ chiếu:</h6>
+                                                            <div class="btn-toolbar justify-content-start" role="toolbar" aria-label="Lịch xem">
+                                                                @foreach (var giochieu in cachieu.GioChieus.Where(gc => gc.Cachieu == cachieu.IdCaChieu))
+                                                                {
+                                                                    <div class="btn-group me-2" role="group">
+                                                                        @if (giochieu.TrangThai == "Chưa chiếu")
+                                                                        {
+                                                                            <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" data-phim-id="@phim.IdPhim" class="btn btn-outline-primary time-slot">
+                                                                                @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                            </a>
+                                                                        }
+                                                                        else if (giochieu.TrangThai == "Đang chiếu")
+                                                                        {
+                                                                            <a href="#" class="btn btn-warning disabled" aria-disabled="true">
+                                                                                @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                            </a>
+                                                                        }
+                                                                        else if (giochieu.TrangThai == "Hết hạn")
+                                                                        {
+                                                                            <a href="#" class="btn btn-danger disabled" aria-disabled="true">
+                                                                                @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                            </a>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>Chưa có giờ chiếu</p>
+                                                        }
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <small class="text-muted">Trạng thái: @cachieu.TrangThai</small>
+                                                    </div>
+                                                 
                                                 </div>
-                                                <div class="card-body">
-                                                    @if (cachieu.GioChieus != null && cachieu.GioChieus.Any())
-                                                    {
-                                                        <h6 class="card-subtitle mb-2 text-muted">Danh sách giờ chiếu:</h6>
-                                                        <div class="btn-toolbar justify-content-start" role="toolbar" aria-label="Lịch xem">
-                                                            @foreach (var giochieu in cachieu.GioChieus.Where(gc => gc.Cachieu == cachieu.IdCaChieu))
-                                                            {
-                                                                <div class="btn-group me-2" role="group">
-                                                                    @if (giochieu.TrangThai == "Chưa chiếu")
-                                                                    {
-                                                                        <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" data-phim-id="@phim.IdPhim" class="btn btn-outline-primary time-slot">
-                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
-                                                                        </a>
-                                                                    }
-                                                                    else if (giochieu.TrangThai == "Đang chiếu")
-                                                                    {
-                                                                        <a href="#" class="btn btn-warning disabled" aria-disabled="true">
-                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
-                                                                        </a>
-                                                                    }
-                                                                    else if (giochieu.TrangThai == "Hết hạn")
-                                                                    {
-                                                                        <a href="#" class="btn btn-danger disabled" aria-disabled="true">
-                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
-                                                                        </a>
-                                                                    }
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>Chưa có giờ chiếu</p>
-                                                    }
-                                                </div>
-                                                <div class="card-footer">
-                                                    <small class="text-muted">Trạng thái: @cachieu.TrangThai</small>
-                                                </div>
-                                            </div>
+                                            }
                                         }
+                                        else
+                                        {
+                                            <p>Không có suất chiếu</p>
+                                        }
+                                        <p>
+                                            <span class="btn btn-danger btn-circle disabled"></span> Hết hạn
+                                            <span class="btn btn-warning disabled btn-circle"></span> Đang chiếu
+                                            <span class="btn btn-outline-primary btn-circle"></span> Chưa chiếu
+                                        </p>
                                     }
                                     else
                                     {
-                                        <p>Không có suất chiếu</p>
+                                        <h6>Vui lòng đăng nhập để thực hiện chức năng này !!!</h6>
                                     }
+                                  
                                 </div>
                             </div>
                         </div>

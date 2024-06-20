@@ -7,41 +7,28 @@
 
 <h1 class="display-4 text-center my-4">Chỉnh sửa ca chiếu</h1>
 
-<h4>CaChieu</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card shadow mb-4">
+    <div class="card-header bg-warning text-white">
+        <h4 class="card-title mb-0">Cập nhật thông tin ca chiếu</h4>
+    </div>
+    <div class="card-body">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="IdCaChieu" />
             <div class="form-group">
-                <label asp-for="Phong" class="control-label"></label>
+                <label asp-for="Phong" class="control-label">Phòng chiếu</label>
                 <select asp-for="Phong" class="form-control" asp-items="ViewBag.Phong"></select>
                 <span asp-validation-for="Phong" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Phim" class="control-label"></label>
+                <label asp-for="Phim" class="control-label">Phim</label>
                 <select asp-for="Phim" class="form-control" asp-items="ViewBag.Phim"></select>
                 <span asp-validation-for="Phim" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="NgayChieu" class="control-label"></label>
-                <input asp-for="NgayChieu" class="form-control" />
-                <span asp-validation-for="NgayChieu" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group text-right">
+                <input type="submit" value="Lưu thay đổi" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
