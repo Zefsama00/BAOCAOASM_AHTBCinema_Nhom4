@@ -94,9 +94,24 @@
                                                             @foreach (var giochieu in cachieu.GioChieus.Where(gc => gc.Cachieu == cachieu.IdCaChieu))
                                                             {
                                                                 <div class="btn-group me-2" role="group">
-                                                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" data-phim-id="@phim.IdPhim" class="btn btn-outline-primary time-slot">
-                                                                        @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
-                                                                    </a>
+                                                                    @if (giochieu.TrangThai == "Chưa chiếu")
+                                                                    {
+                                                                        <a data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="@giochieu.IdGioChieu" data-phim-id="@phim.IdPhim" class="btn btn-outline-primary time-slot">
+                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                        </a>
+                                                                    }
+                                                                    else if (giochieu.TrangThai == "Đang chiếu")
+                                                                    {
+                                                                        <a href="#" class="btn btn-warning disabled" aria-disabled="true">
+                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                        </a>
+                                                                    }
+                                                                    else if (giochieu.TrangThai == "Hết hạn")
+                                                                    {
+                                                                        <a href="#" class="btn btn-danger disabled" aria-disabled="true">
+                                                                            @giochieu.GioBatDau.ToString(@"hh\:mm") - @giochieu.GioKetThuc.ToString(@"hh\:mm")
+                                                                        </a>
+                                                                    }
                                                                 </div>
                                                             }
                                                         </div>
