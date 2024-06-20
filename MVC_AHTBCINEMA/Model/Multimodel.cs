@@ -14,5 +14,6 @@ namespace MVC_AHTBCINEMA.Model
         public List<GioChieu> GioChieu { get; internal set; }
 
         public List<KhuyenMai> KhuyenMai { get; internal set; }
+        public List<DoAnvaNuoc> DoAnVaNuoc { get; internal set; }
     }
 }
