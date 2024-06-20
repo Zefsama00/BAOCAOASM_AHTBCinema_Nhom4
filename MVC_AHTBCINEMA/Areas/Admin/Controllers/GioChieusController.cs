@@ -220,50 +220,47 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
                     // Determine TrangThai based on current time and screening times
                     if (currentDateTime >= screeningStartDateTime && currentDateTime <= screeningEndDateTime)
                     {
-                        gioChieu.TrangThai = "Đang chiếu";
+                        currentGioChieu.TrangThai = "Đang chiếu";
                     }
                     else if (currentDateTime > screeningEndDateTime)
                     {
-                        gioChieu.TrangThai = "Hết hạn";
+                        currentGioChieu.TrangThai = "Hết hạn";
                     }
                     else
                     {
-                        gioChieu.TrangThai = "Chưa chiếu";
+                        currentGioChieu.TrangThai = "Chưa chiếu";
                     }
 
-                    // Update TrangThai for CaChieu based on GioChieu
+                    // Save changes to GioChieu
+                    _context.Update(currentGioChieu);
+                    await _context.SaveChangesAsync();
+
+                    // Update TrangThai for CaChieu based on all GioChieu
+                    var gioChieuList = await _context.GioChieus
+                        .Where(gc => gc.Cachieu == gioChieu.Cachieu)
+                        .ToListAsync();
+
                     var caChieu = currentGioChieu.CaChieus;
 
-                    // Check if there is any GioChieu in the CaChieu that is currently screening
-                    bool isAnyGioChieuInCaChieuScreening = await _context.GioChieus
-                        .AnyAsync(gc => gc.Cachieu == gioChieu.Cachieu && gc.TrangThai == "Đang chiếu");
-
-                    // Update CaChieu TrangThai based on GioChieu TrangThai
-                    if (isAnyGioChieuInCaChieuScreening)
+                    if (gioChieuList.Any(gc => gc.TrangThai == "Đang chiếu"))
                     {
                         caChieu.TrangThai = "Đang chiếu";
                     }
+                    else if (gioChieuList.All(gc => gc.TrangThai == "Hết hạn"))
+                    {
+                        caChieu.TrangThai = "Đã chiếu";
+                    }
+                    else if (gioChieuList.All(gc => gc.TrangThai == "Chưa chiếu"))
+                    {
+                        caChieu.TrangThai = "Chưa chiếu";
+                    }
                     else
                     {
-                        // Check if there are only "Chưa chiếu" and "Hết hạn" GioChieu in the CaChieu
-                        bool hasOnlyNotStartedOrExpiredGioChieu = await _context.GioChieus
-                            .AllAsync(gc => gc.Cachieu == gioChieu.Cachieu &&
-                                            (gc.TrangThai == "Chưa chiếu" || gc.TrangThai == "Hết hạn"));
-
-                        // Update CaChieu TrangThai based on GioChieu TrangThai
-                        if (hasOnlyNotStartedOrExpiredGioChieu)
-                        {
-                            caChieu.TrangThai = "Chưa chiếu";
-                        }
-                        else
-                        {
-                            caChieu.TrangThai = gioChieu.TrangThai;
-                        }
+                        caChieu.TrangThai = gioChieu.TrangThai;
                     }
 
-                    // Save changes to database
+                    // Save changes to CaChieu
                     _context.Update(caChieu);
-                    _context.Update(currentGioChieu);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction(nameof(Index));
@@ -283,24 +280,24 @@ namespace MVC_AHTBCINEMA.Areas.Admin.Controllers
 
             // If ModelState is not valid, reload Cachieu dropdown
             var caChieus = _context.CaChieus
-             .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
-             .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
-             .Where(c => c.TrangThai != "Hết hạn")
-             .ToList()
-             .Select(c => new {
-                 IdCaChieu = c.IdCaChieu,
-                 NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
-             })
-             .ToList();
+                .Include(c => c.Phongs) // Nạp thông tin từ bảng Phongs
+                .Include(c => c.Phims)  // Nạp thông tin từ bảng Phims
+                .Where(c => c.TrangThai != "Hết hạn")
+                .ToList()
+                .Select(c => new {
+                    IdCaChieu = c.IdCaChieu,
+                    NgayChieu = $"{c.NgayChieu.ToString("dd/MM/yyyy")} - {c.Phongs.SoPhong} - {c.Phims.TenPhim}"
+                })
+                .ToList();
 
             ViewData["Cachieu"] = new SelectList(caChieus, "IdCaChieu", "NgayChieu");
             return View(gioChieu);
         }
 
-
         private bool GioChieuExists(int id)
         {
             return _context.GioChieus.Any(e => e.IdGioChieu == id);
         }
+
     }
 }
